@@ -49,18 +49,15 @@ export const loginWithEmailAndPassword = async (email, password) => {
 }
 
 export const uploadImage = async(image, path, name) => {
-    console.log("entro a uploadImage")
     const result = { statusResponse: false, error: null, url: null }
     const ref = firebase.storage().ref(path).child(name)
     const blob = await fileToBlob(image)
-    console.log("blob...")
     try {
         await ref.put(blob)
         const url = await firebase.storage().ref(`${path}/${name}`).getDownloadURL()
         result.statusResponse = true
         result.url = url
     } catch (error) {
-        console.log("error....")
         result.error = error
     }
     return result

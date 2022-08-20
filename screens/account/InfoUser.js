@@ -11,13 +11,9 @@ export default function InfoUser({user, setLoading, setLoadingText}) {
         if (!result.status) {
             return 
         }
-        //console.log("load image ", result)
         setLoadingText("Actualizando imagen...")
         setLoading(true)
-        //console.log("user id", user)
         const resultUploadImage = await uploadImage(result.image, "avatars", user.uid)
-        //console.log("result upload ", resultUploadImage)
-        //console.log("result user ", user.id)
         if(!resultUploadImage.statusResponse){
             setLoading(false)
             Alert.alert("Ha ocurrido un error al amacenar la foto de perfil.")
@@ -26,7 +22,6 @@ export default function InfoUser({user, setLoading, setLoadingText}) {
         const resultUpdateProfile = await updateProfile({photoUrl: resultUploadImage.url})
         setLoading(false)
         if(resultUpdateProfile.statusResponse) {
-            console.log("set photo url", resultUploadImage.url)
             setPhotoUrl(resultUploadImage.url)
         } else {
             Alert.alert("Ha ocurrido un error al actualizar la foto de perfil.")
