@@ -6,7 +6,8 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/compat/firestore';
 import 'firebase/compat/storage'
-import { fileToBlob } from './helpers'
+import 'firebase/auth';
+import { fileToBlob } from './helpers';
 
 const db = firebase.firestore(firebaseApp)
 
@@ -67,6 +68,30 @@ export const updateProfile = async(data) => {
     const result = { statusResponse: true, error: null }
     try {
         await firebase.auth().currentUser.updateProfile(data)
+    } catch (error) {
+        result.statusResponse = false
+        result.error = error
+    }
+    return result
+}
+
+export const reauthenticate = async(password) => {
+    const result = { statusResponse: true, error: null }
+    const user = getCurrentUser()
+    const credentials = firebase.auth.EmailAuthProvider.credential(user.email, password)
+    try {
+        await user.reauthenticateWithCredential(credentials)
+    } catch (error) {
+        result.statusResponse = false
+        result.error = error
+    }
+    return result
+}
+
+export const updateEmail = async(email) => {
+    const result = { statusResponse: true, error: null }
+    try {
+        await firebase.auth().currentUser.updateEmail(email)
     } catch (error) {
         result.statusResponse = false
         result.error = error

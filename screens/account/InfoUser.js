@@ -19,7 +19,7 @@ export default function InfoUser({user, setLoading, setLoadingText}) {
             Alert.alert("Ha ocurrido un error al amacenar la foto de perfil.")
             return 
         }
-        const resultUpdateProfile = await updateProfile({photoUrl: resultUploadImage.url})
+        const resultUpdateProfile = await updateProfile({photoURL: resultUploadImage.url})
         setLoading(false)
         if(resultUpdateProfile.statusResponse) {
             setPhotoUrl(resultUploadImage.url)

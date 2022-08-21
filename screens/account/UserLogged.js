@@ -6,6 +6,7 @@ import { closeSesion, getCurrentUser } from "../../utils/actions";
 import Toast from "react-native-easy-toast";
 import Loading from "../../components/Loading";
 import InfoUser from "./InfoUser";
+import AccountOptions from "../../components/account/AccountOptions";
 
 export default function UserLogged() {
     const toastRef = useRef()
@@ -14,10 +15,12 @@ export default function UserLogged() {
     const [loading, setLoading] = useState(false)
     const [loadingText, setLoadingText] = useState("")
     const [user, setUser] = useState(null)
+    const [relodUser, setRelodUser] = useState(false)
 
     useEffect(() => {
         setUser(getCurrentUser())
-    }, [])
+        setRelodUser(false)
+    }, [relodUser])
 
     return (
         <View style={styles.container}>
@@ -29,7 +32,11 @@ export default function UserLogged() {
                             setLoading={setLoading} 
                             setLoadingText={setLoadingText}
                             />
-                        <Text>Account options</Text>
+                        <AccountOptions
+                            user={user}
+                            toastRef={toastRef}
+                            setRelodUser={setRelodUser}
+                        />
                     </View>
                 )
                     
