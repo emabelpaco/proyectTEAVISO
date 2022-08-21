@@ -1,12 +1,11 @@
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import Mensaje from '../screens/Mensajes';
 import Secciones from '../screens/Secciones';
 import Chat from '../screens/Chat';
-import Account from '../screens/account/Account'; 
 import AccountStack from './AccountStack';
 import { Icon } from 'react-native-elements';
+import MensajeStack from './MensajeStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -51,7 +50,7 @@ export default function  Navigation (){
         >
             <Tab.Screen
                 name="mensaje"
-                component={Mensaje}
+                component={MensajeStack}
                 options={{title: "Mensajes"}}
             />
             <Tab.Screen

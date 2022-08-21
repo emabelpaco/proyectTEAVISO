@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-export default function Mensaje() {
+export default function AddMensaje() {
     return (
         <View>
-            <Text>Mensaje</Text>
+            <Text>add mensaje</Text>
         </View>
     )
 }

@@ -1,8 +1,9 @@
+//import { updatePassword } from "firebase/auth";
 import { isEmpty, size } from "lodash";
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, Input, Icon } from 'react-native-elements'
-import { reauthenticate, updateEmail } from "../../utils/actions";
+import { reauthenticate, updatePassword } from "../../utils/actions";
 import { validateEmail } from "../../utils/helpers";
 
 export default function ChangePasswordForm({setShowModal, toastRef}) {
@@ -21,24 +22,24 @@ export default function ChangePasswordForm({setShowModal, toastRef}) {
             return
         }
         setLoading(true)
-        const resultReautheticate = await reauthenticate(password)
+        const resultReautheticate = await reauthenticate(currentPassword)
        
         if(!resultReautheticate.statusResponse) {
             setLoading(false)
-            setErrorPassword("Contraseña incorrecta.")
+            setErrorCurrentPassword("Contraseña incorrecta.")
             return
         }
 
-        const resultUpdateEmail = await updateEmail(newEmail) 
+        const resultUpdatePassword = await updatePassword(newPassword) 
         setLoading(false)
 
-        if(!resultUpdateEmail.statusResponse) {
-            setErrorPassword("No se puede cambiar por este correo, ya esta en uso por otro usuario.")
+        if(!resultUpdatePassword.statusResponse) {
+            setErrorNewPassword("Hubo un problema cambiando la contraseña, por favor intente más tarde.")
             return
         }
         
-        setRelodUser(true)
-        toastRef.current.show("Se ha actualizado el email.", 3000)
+        //setRelodUser(true)
+        toastRef.current.show("Se ha actualizado la contraseña.", 3000)
         setShowModal(false)
 
     }
