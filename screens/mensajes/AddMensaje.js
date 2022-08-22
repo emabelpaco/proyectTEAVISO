@@ -14,6 +14,7 @@ export default function AddMensaje({ navigation }) {
             <AddMensajeForm
                 toastRef={toastRef}
                 setLoading={setLoading}
+                navigation={navigation}
             />
             <Loading
                 isVisible={loading}
