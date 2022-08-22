@@ -18,12 +18,19 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.emabelpaco.teaviso"
     },
     "android": {
+      "package": "com.emabelpaco.teaviso",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBJ6I0qLnosgZJbOGic39B5_58icJkcOlg"
+        }
       },
       "permissions": [
         "CAMERA_ROLL",
