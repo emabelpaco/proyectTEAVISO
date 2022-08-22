@@ -4,6 +4,8 @@ import { Button, Input, Icon, Avatar, Image } from "react-native-elements";
 import CountryPicker from 'react-native-country-picker-modal';
 import { map, size, filter, isEmpty } from 'lodash';
 import { loadImageFromGalery } from "../../utils/helpers";
+import { addDocumentWithoutId, getCurrentUser, uploadImage } from "../../utils/actions";
+import uuid from 'random-uuid-v4'
 
 const widthScreen = Dimensions.get("window").width
 
@@ -18,16 +20,48 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
     const [imagesSelected, setImagesSelected] = useState([])
 
 
-    const addMensaje = () => {
+    const addMensaje = async () => {
         if(!validForm()) {
             return
         }
+        setLoading(true)
+        const responseUploadImages = await UploadImages()
+        const mensaje = {
+            name: formData.name,
+            address: formData.address,
+            email: formData.email,
+            description: formData.description,
+            callingCode: formData.callingCode,
+            phone: formData.phone,
+            images: responseUploadImages,
+            createAdd: new Date(),
+            createBy: getCurrentUser().uid
+        }
+        const responseAddDocument = await addDocumentWithoutId("mensajes", mensaje)
+        setLoading(false)
+
+        if (!responseAddDocument.statusResponse) {
+            toasRef.current.show("Error al crear el mensaje, intente más tarde", 3000)
+            return
+        }
         
-        console.log("add mensajeeeeee")
+        navigation.navigate("mensaje")
+    }
+
+    const UploadImages = async () => {
+        const imagesUrl = []
+        await Promise.all(
+            map(imagesSelected, async(image) => {
+                const response = await uploadImage(image, "mensajes", uuid())
+                if(response.statusResponse) {
+                    imagesUrl.push(response.url)
+                }
+            })
+        )
+        return imagesUrl
     }
 
     const validForm = () => {
-        console.log(formData)
         clearErrors()
         let isValid = true
 

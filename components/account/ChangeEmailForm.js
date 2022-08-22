@@ -14,7 +14,6 @@ export default function ChangeEmailForm({email, setShowModal, toastRef, setRelod
     const [loading, setLoading] = useState(false)
 
     const onSubmit = async () => {
-        console.log("submit")
         if(!validateForm()){
             return
         }

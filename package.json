@@ -22,6 +22,7 @@
     "firebase": "9.9.2",
     "idb": "^7.0.2",
     "lodash": "^4.17.21",
+    "random-uuid-v4": "^0.0.9",
     "react": "18.0.0",
     "react-native": "0.69.4",
     "react-native-country-picker-modal": "^2.0.0",

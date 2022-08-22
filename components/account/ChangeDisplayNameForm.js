@@ -10,7 +10,6 @@ export default function ChangeDisplayNameForm({displayName, setShowModal, toastR
     const [loading, setLoading] = useState(false)
 
     const onSubmit = async () => {
-        console.log("submit")
         if(!validateForm()){
             return
         }
