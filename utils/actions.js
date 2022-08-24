@@ -7,6 +7,7 @@ import 'firebase/compat/firestore';
 import 'firebase/compat/storage'
 import 'firebase/auth';
 import { fileToBlob } from './helpers';
+import { collection } from 'firebase/compat/storage'
 
 const db = firebase.firestore(firebaseApp)
 
@@ -113,6 +114,29 @@ export const addDocumentWithoutId = async(collection, data) => {
     const result = { statusResponse: true, error: null }
     try {
         await db.collection(collection).add(data)
+    } catch (error) {
+        result.statusResponse = false
+        result.error = error
+    }
+    return result
+}
+
+export const getMensajes = async(limitMensajes) => {
+    console.log("ingresamos a actions")
+    const result = { statusResponse: true, error: null, mensajes: [], startMensaje: null }
+    try {
+        const response = await db.collection("mensajes").get()
+        console.log("docs: ", response.docs)
+        if(response.docs.size > 0) {
+            result.startMensaje = response.docs[response.docs.length -1]
+            console.log("start: ", result.startMensaje)
+        }
+        response.forEach((doc) => {
+            const mensaje = doc.data()
+            mensaje.id = doc.id
+            console.log("mensajeee: ", mensaje)
+            result.mensajes.push(mensaje)
+        })
     } catch (error) {
         result.statusResponse = false
         result.error = error

@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
         color: "#f18fa7"
     },
     button: {
-        backgroundColor: "#57d5ae",
+        backgroundColor: "#4cb4eb",
 
     }
 })

@@ -8,7 +8,15 @@ const Stack = createStackNavigator();
 
 export default function AccountStack() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: "#4cb4eb",
+                },
+                headerTintColor: "white",
+                headerBackTitle: "Back",
+            }}
+        >
             <Stack.Screen
                 name="cuenta"
                 component={Account}

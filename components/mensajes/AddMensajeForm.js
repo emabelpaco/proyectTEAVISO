@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     },
     btnAddMensaje: {
         margin: 20,
-        backgroundColor: "#57d5ae"
+        backgroundColor: "#4cb4eb"
     },
     viewImage: {
         flexDirection: "row",

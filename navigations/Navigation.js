@@ -14,7 +14,7 @@ export default function  Navigation (){
         let iconName
         switch (route.name) {
             case "mensaje":
-                iconName = "message-outline"
+                iconName = "view-grid-outline"
                 break;
             case "chat":
                 iconName = "chat-plus-outline"
@@ -30,7 +30,7 @@ export default function  Navigation (){
             <Icon
                 type="material-community"
                 name={iconName}
-                size={22}
+                size={27}
                 color={color}
             />
         )
@@ -42,16 +42,17 @@ export default function  Navigation (){
             initialRouteName='mensaje'
             tabBarOptions={{
                 inactiveTintColor: "#866e74",
-                activeTintColor: "#57d5ae"
+                activeTintColor: "#4cb4eb"
             }}
             screenOptions={({ route }) => ({
+                headerShown: false,
                 tabBarIcon: ({color}) => screenOptions(route, color)
             })}
         >
             <Tab.Screen
                 name="mensaje"
                 component={MensajeStack}
-                options={{title: "Mensajes"}}
+                options={{title: "Categorías"}}
             />
             <Tab.Screen
                 name="chat"
@@ -59,14 +60,14 @@ export default function  Navigation (){
                 options={{title: "Chat"}}
             />
             <Tab.Screen
-                name="cuenta"
-                component={AccountStack}
-                options={{title: "Cuenta"}}
-            />
-            <Tab.Screen
                 name="secciones"
                 component={Secciones}
                 options={{title: "Favoritos"}}
+            />
+            <Tab.Screen
+                name="cuenta"
+                component={AccountStack}
+                options={{title: "Cuenta"}}
             />
         </Tab.Navigator>
       </NavigationContainer>

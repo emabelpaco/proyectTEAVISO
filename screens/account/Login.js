@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 40
     },
     divider: {
-        backgroundColor: "#57d5ae",
+        backgroundColor: "#4cb4eb",
         margin: 40
     },
     register: {
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     btnRegister: {
-        color: "#57d5ae",
+        color: "#4cb4eb",
         fontWeight: "bold"
     }
 })

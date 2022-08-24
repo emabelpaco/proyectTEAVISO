@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     btn: {
-        backgroundColor: "#57d5ae"
+        backgroundColor: "#4cb4eb"
     },
     icon: {
         color: "#c1c1c1"
