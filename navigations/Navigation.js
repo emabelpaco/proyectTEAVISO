@@ -1,8 +1,8 @@
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import Secciones from '../screens/Secciones';
-import Chat from '../screens/Chat';
+import SeccioneStack from './SeccionesStack';
+import ChatStack from './ChatStack';
 import AccountStack from './AccountStack';
 import { Icon } from 'react-native-elements';
 import MensajeStack from './MensajeStack';
@@ -56,12 +56,12 @@ export default function  Navigation (){
             />
             <Tab.Screen
                 name="chat"
-                component={Chat}
+                component={ChatStack}
                 options={{title: "Chat"}}
             />
             <Tab.Screen
                 name="secciones"
-                component={Secciones}
+                component={SeccioneStack}
                 options={{title: "Favoritos"}}
             />
             <Tab.Screen
