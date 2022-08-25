@@ -66,12 +66,14 @@ const styles = StyleSheet.create({
         marginRight: 15
     },
     imageRestaurant: {
-        width: 90,
-        height: 90
+        width: 120,
+        height: 120,
+        borderWidth: 4,
+        borderColor: "#d9d9d9"
     },
     restaurantTitle: {
         fontWeight: "bold",
-        fontSize: 25
+        fontSize: 27,
     },
     restaurantInformation: {
         paddingTop: 2,

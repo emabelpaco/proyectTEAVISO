@@ -11,7 +11,7 @@ export default function AccountStack() {
         <Stack.Navigator
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: "#4cb4eb",
+                    backgroundColor: "#1684D4",
                 },
                 headerTintColor: "white",
                 headerBackTitle: "Back",

@@ -1,8 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import Chat from "../screens/Chat";
-import AddMensaje from "../screens/mensajes/AddMensaje";
-import Mensaje from "../screens/mensajes/Mensajes";
 
 const Stack = createStackNavigator();
 
@@ -11,7 +9,7 @@ export default function ChatStack() {
         <Stack.Navigator
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: "#4cb4eb",
+                    backgroundColor: "#1684D4",
                 },
                 headerTintColor: "white",
                 headerBackTitle: "Back",

@@ -79,7 +79,7 @@ export default function Mensaje() {
                     />
                 ) : (
                     <View style={styles.notFoundView}>
-                        <Text style={styles.notFoundText}>No hay categorias guardadas.</Text>
+                        <Text style={styles.notFoundText}></Text>
                     </View>
                 )
             }

@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     descripcion: {
         textAlign: "justify",
         marginBottom: 20,
-        color: "#f18fa7"
+        color: "#48a6be"
     },
     button: {
         backgroundColor: "#4cb4eb",
