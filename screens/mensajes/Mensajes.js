@@ -87,7 +87,7 @@ export default function Mensaje() {
                 user && (
                     <Icon
                         type="material-community"
-                        name="plus"
+                        name="pencil"
                         color="#4cb4eb"
                         reverse
                         containerStyle={styles.btnContainer}

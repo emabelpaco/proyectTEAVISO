@@ -13,12 +13,13 @@ export default function ChatStack() {
                 },
                 headerTintColor: "white",
                 headerBackTitle: "Back",
+                headerTitleStyle:{fontSize: 20}
             }}
         >
             <Stack.Screen
                 name="chat"
                 component={Chat}
-                options={{title: "Chat"}}
+                options={{title: "CHAT"}}
                 />
         </Stack.Navigator>
         

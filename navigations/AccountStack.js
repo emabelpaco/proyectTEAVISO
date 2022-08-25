@@ -15,6 +15,7 @@ export default function AccountStack() {
                 },
                 headerTintColor: "white",
                 headerBackTitle: "Back",
+                headerTitleStyle:{fontSize: 25}
             }}
         >
             <Stack.Screen

@@ -13,12 +13,13 @@ export default function SeccioneStack() {
                 },
                 headerTintColor: "white",
                 headerBackTitle: "Back",
+                headerTitleStyle:{fontSize: 20}
             }}
         >
             <Stack.Screen
                 name="secciones"
                 component={Secciones}
-                options={{title: "Favoritos"}}
+                options={{title: "TUS PICTOGRAMAS"}}
                 />
         </Stack.Navigator>
         

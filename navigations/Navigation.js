@@ -62,7 +62,7 @@ export default function  Navigation (){
             <Tab.Screen
                 name="secciones"
                 component={SeccioneStack}
-                options={{title: "Favoritos"}}
+                options={{title: "Pictogramas"}}
             />
             <Tab.Screen
                 name="cuenta"

@@ -14,17 +14,18 @@ export default function MensajeStack() {
                 },
                 headerTintColor: "white",
                 headerBackTitle: "Back",
+                headerTitleStyle:{fontSize: 20}
             }}
         >
             <Stack.Screen
                 name="mensaje"
                 component={Mensaje}
-                options={{title: "Categorías"}}
+                options={{title: "CATEGORÍAS"}}
                 />
             <Stack.Screen
                 name="addmensaje"
                 component={AddMensaje}
-                options={{title: "Crear Mensaje"}}
+                options={{title: "CREAR MENSAJE"}}
                 />
         </Stack.Navigator>
         

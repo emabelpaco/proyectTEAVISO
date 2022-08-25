@@ -6,6 +6,7 @@ import UserLogged from "./UserLogged";
 import firebase from 'firebase/compat/app'
 import Loading from "../../components/Loading";
 import { useFocusEffect } from "@react-navigation/native";
+import Login from "./Login";
 
 export default function Account() {
     const [login, setLogin] = useState(null)
@@ -26,6 +27,7 @@ export default function Account() {
     }
 
     return login ? <UserLogged/> : <UserGuest/>
+    //return login ? <UserLogged/> : <Login/>
 }
 
 const styles = StyleSheet.create({})

@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     image: {
         height: 150,
         width: "100%",
-        marginBottom: 20,
+        marginBottom: 5,
     },
     container: {
         marginHorizontal: 40

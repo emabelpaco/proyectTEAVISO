@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
         width: "100%"
     },
     btnContainer: {
-        marginTop: 30,
+        marginTop: 15,
         width: "95%",
         alignSelf: "center"
     },

@@ -130,7 +130,7 @@ function ImageMensaje({imageMensaje}) {
 
 function UploadImage(toasRef, imagesSelected, setImagesSelected) {
     const imageSelect = async() => {
-        const response = await loadImageFromGalery([4, 3])
+        const response = await loadImageFromGalery([4, 4])
         if(!response.status) {
             toasRef.current.show("No has seleccionado ninguna imagen", 3000)
             return
