@@ -121,7 +121,7 @@ function ImageMensaje({imageMensaje}) {
                 source={
                     imageMensaje 
                     ? {uri: imageMensaje}
-                    : require("../../assets/icon.png")
+                    : require("../../assets/no-image.png")
                 }
             />
         </View>

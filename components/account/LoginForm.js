@@ -86,6 +86,36 @@ export default function LoginForm() {
                 buttonStyle={styles.btn}
                 onPress={() => doLogin()}
             />
+            <Button
+                title="Iniciar Sesión con Google"
+                containerStyle={styles.btnContainer}
+                buttonStyle={styles.btnGoogle}
+                onPress={() => console.log("Iniciar con google")}
+                icon={
+                    <Icon
+                        name="google"
+                        type="material-community"
+                        marginRight={10}
+                        size={20}
+                        color="#fff"
+                    />
+                }
+            />
+            <Button
+                title="Iniciar Sesión con Facebook"
+                containerStyle={styles.btnContainer}
+                buttonStyle={styles.btnFacebook}
+                onPress={() => console.log("Iniciar con facebook")}
+                icon={
+                    <Icon
+                        name="facebook"
+                        type="material-community"
+                        marginRight={10}
+                        size={20}
+                        color="#fff"
+                    />
+                }
+            />
             <Loading
                 isVisible={loading}
                 text="Iniciando Sesión..."
@@ -117,5 +147,11 @@ const styles = StyleSheet.create({
     },
     icon: {
         color: "#c1c1c1"
+    },
+    btnGoogle: {
+        backgroundColor: "#EA4335"
+    },
+    btnFacebook: {
+        //backgroundColor: "#EA4335"
     }
 })
