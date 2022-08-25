@@ -21,19 +21,7 @@ export default function UserGuest() {
             />
             <Text style={styles.text}>Consulta tu perfil en TEAVISO</Text>
             <Text style={styles.descripcion}>
-            in SceneView (created by BottomTabView)
-            in RCTView (created by View)
-            in View (created by Screen)
-            in RCTView (created by View)
-            in View (created by Background)
-            in Background (created by Screen)
-            in Screen (created by BottomTabView)
-            in RNSScreen (created by AnimatedComponent)
-            in AnimatedComponent
-            in AnimatedComponentWrapper (created by Screen)
-            in MaybeFreeze (created by Screen)
-            in Screen (created by MaybeScreen)
-            in MaybeScreen (created by BottomTabView)
+            Una vez logueado a la aplicación podrá utilizar las distintas funcionalidades que brinda la herramienta. 
             </Text>
             <Button
                 buttonStyle={styles.button}
@@ -49,10 +37,10 @@ const styles = StyleSheet.create({
         marginHorizontal: 30
     },
     image : {
-        height: 300,
+        height: 150,
         width: "100%",
-        marginBottom: 10,
-        //marginTop:100
+        marginBottom: 50,
+        marginTop:80
     },
     text: {
         fontWeight: "bold",
