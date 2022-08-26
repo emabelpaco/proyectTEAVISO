@@ -6,6 +6,7 @@ import ChatStack from './ChatStack';
 import AccountStack from './AccountStack';
 import { Icon } from 'react-native-elements';
 import MensajeStack from './MensajeStack';
+import FavoritoStack from './FavoritoStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -61,8 +62,8 @@ export default function  Navigation (){
             />
             <Tab.Screen
                 name="secciones"
-                component={SeccioneStack}
-                options={{title: "Pictogramas"}}
+                component={FavoritoStack}
+                options={{title: "Mis Pictogramas"}}
             />
             <Tab.Screen
                 name="cuenta"

@@ -122,19 +122,34 @@ export const addDocumentWithoutId = async(collection, data) => {
 }
 
 export const getMensajes = async(limitMensajes) => {
-    console.log("ingresamos a actions")
     const result = { statusResponse: true, error: null, mensajes: [], startMensaje: null }
     try {
         const response = await db.collection("mensajes").get()
-        console.log("docs: ", response.docs)
         if(response.docs.size > 0) {
             result.startMensaje = response.docs[response.docs.length -1]
-            console.log("start: ", result.startMensaje)
         }
         response.forEach((doc) => {
             const mensaje = doc.data()
             mensaje.id = doc.id
-            console.log("mensajeee: ", mensaje)
+            result.mensajes.push(mensaje)
+        })
+    } catch (error) {
+        result.statusResponse = false
+        result.error = error
+    }
+    return result
+}
+
+export const getPictogramas = async(limitMensajes) => {
+    const result = { statusResponse: true, error: null, mensajes: [], startMensaje: null }
+    try {
+        const response = await db.collection("favoritos").get()
+        if(response.docs.size > 0) {
+            result.startMensaje = response.docs[response.docs.length -1]
+        }
+        response.forEach((doc) => {
+            const mensaje = doc.data()
+            mensaje.id = doc.id
             result.mensajes.push(mensaje)
         })
     } catch (error) {
