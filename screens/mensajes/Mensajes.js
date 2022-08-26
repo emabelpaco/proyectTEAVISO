@@ -23,17 +23,6 @@ export default function Mensaje() {
         })
     }, [])
 
-    // useFocusEffect(
-    //     useCallback(async() => {
-    //         setLoading(true)
-    //         const response = await getMensajes(limitMensajes)
-    //         if(response.statusResponse) {
-    //             setStartMensaje(response.startMensaje)
-    //             setMensajes(response.mensajes)
-    //         }
-    //         setLoading(false)
-    //     }, [])
-    // )
     useFocusEffect(
         useCallback(() => {
             async function getData(){
@@ -67,7 +56,9 @@ export default function Mensaje() {
     if(user == null) {
         return <Loading isVisible={true} text={"Cargando..."}/>
     }
+
     const navigation = useNavigation()
+
     return (
         <View style={styles.viewBody}>
             {
@@ -96,7 +87,7 @@ export default function Mensaje() {
                 )
                 
             }
-            <Loading isVisible={loading} text="Cargando mensajes..."/>
+            <Loading isVisible={loading} text="Cargando categorías..."/>
         </View>
     )
 }

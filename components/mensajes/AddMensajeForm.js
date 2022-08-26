@@ -13,10 +13,6 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
 
     const [formData, setFormData] = useState(defaultFormValue())
     const [errorName, setErrorName] = useState(null)
-    const [errorDescription, setErrorDescription] = useState(null)
-    const [errorEmail, setErrorEmail] = useState(null)
-    const [errorAddress, setErrorAddress] = useState(null)
-    const [errorPhone, setErrorPhone] = useState(null)
     const [imagesSelected, setImagesSelected] = useState([])
 
 
@@ -28,20 +24,15 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
         const responseUploadImages = await UploadImages()
         const mensaje = {
             name: formData.name,
-            address: formData.address,
-            email: formData.email,
-            description: formData.description,
-            callingCode: formData.callingCode,
-            phone: formData.phone,
             images: responseUploadImages,
             createAdd: new Date(),
             createBy: getCurrentUser().uid
         }
-        const responseAddDocument = await addDocumentWithoutId("mensajes", mensaje)
+        const responseAddDocument = await addDocumentWithoutId("frases", mensaje)
         setLoading(false)
 
         if (!responseAddDocument.statusResponse) {
-            toasRef.current.show("Error al crear el mensaje, intente más tarde", 3000)
+            toasRef.current.show("Error al crear la frase, intente más tarde", 3000)
             return
         }
         
@@ -52,7 +43,7 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
         const imagesUrl = []
         await Promise.all(
             map(imagesSelected, async(image) => {
-                const response = await uploadImage(image, "mensajes", uuid())
+                const response = await uploadImage(image, "frases", uuid())
                 if(response.statusResponse) {
                     imagesUrl.push(response.url)
                 }
@@ -69,20 +60,12 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
             setErrorName("Debe ingresar el nombre del mensaje.")
             isValid = false
         }
-        if(isEmpty(formData.address)){
-            setErrorAddress("Debe ingresar la direccion.")
-            isValid = false
-        }
         // seguir validando email, phone, description
 
         return isValid
     }
 
     const clearErrors = () => {
-        setErrorAddress(null)
-        setErrorDescription(null)
-        setErrorEmail(null)
-        setErrorPhone(null)
     }
 
     return (
@@ -94,10 +77,6 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
                 formData={formData}
                 setFormData={setFormData}
                 errorName={errorName}
-                errorDescription={errorDescription}
-                errorEmail={errorEmail}
-                errorAddress={errorAddress}
-                errorPhone={errorPhone}
             />
             <UploadImage
                 toasRef={toasRef}
@@ -168,17 +147,7 @@ function UploadImage(toasRef, imagesSelected, setImagesSelected) {
             horizontal
             style={styles.viewImage}
         >
-            {
-                size(toasRef.imagesSelected) < 10 && (
-                    <Icon
-                        type="material-community"
-                        name="camera"
-                        color="#7a7a7a"
-                        containerStyle={styles.containerIcon}
-                        onPress={imageSelect}
-                    />
-                ) 
-            }
+            
             {
                 map(toasRef.imagesSelected, (imageMensaje, index) => (
                     <Avatar
@@ -210,67 +179,13 @@ function FormAdd(formData, setFormData, errorName, errorDescription, errorEmail,
                 onChange={(e) => onChange(e, "name")}
                 errorMessage={formData.errorName}
             />
-            <Input
-                placeholder="Dirección"
-                defaultValue={formData.formData.address}
-                onChange={(e) => onChange(e, "address")}
-                errorMessage={formData.errorAddress}
-            />
-            <Input
-                keyboardType="email-address"
-                placeholder="Email"
-                defaultValue={formData.formData.email}
-                onChange={(e) => onChange(e, "email")}
-                errorMessage={formData.errorEmail}
-            />
-            <View style={styles.phoneView}>
-                <CountryPicker
-                    withFlag
-                    withCallingCode
-                    withFilter
-                    withCallingCodeButton
-                    containerStyle={styles.countryPicker}
-                    countryCode={country}
-                    onSelect={(country) => {
-                        formData.setFormData({
-                            ...formData.formData, 
-                            "country": country.cca2, 
-                            "callingCode": country.callingCode[0]
-                        })
-                        setCallingCode(country.callingCode[0])
-                        setCountry(country.cca2)
-                    }}
-                />
-                <Input
-                    placeholder="Whatsaap numero"
-                    keyboardType="phone-pad"
-                    containerStyle={styles.inputPhone}
-                    defaultValue={formData.formData.phone}
-                    onChange={(e) => onChange(e, "phone")}
-                    errorMessage={formData.errorPhone}
-                />
-            </View>
-            <Input
-                placeholder="Descripcion"
-                multiline
-                containerStyle={styles.textArea}
-                defaultValue={formData.formData.description}
-                onChange={(e) => onChange(e, "description")}
-                errorMessage={formData.errorDescription}
-            />
         </View>
     )
 }
 
 const defaultFormValue = () => {
     return {
-        name: "",
-        description: "",
-        email: "",
-        phone: "",
-        address: "",
-        country: "AR",
-        callingCode: "59"
+        name: ""
     }
 }
 

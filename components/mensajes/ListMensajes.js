@@ -24,13 +24,13 @@ function Mensaje({ mensaje, navigation, handleLoadMore }) {
     const { id, images, name, address, description, phone, callingCode } = mensaje.item
     const imageRestaurant = images[0]
 
-    // const goRestaurtant = () => {
-    //     navigation.navigate("restaurant", { id, name })
-    // } 
+    const goFrases = () => {
+        navigation.navigate("frases", { id, name })  // con parametros el id y el nombre de categoria
+        //navigation.navigate("frases")
+    } 
 
     return (
-        // <TouchableOpacity onPress={goRestaurtant}>
-            <TouchableOpacity>
+        <TouchableOpacity onPress={goFrases}>
             <View style={styles.viewRestaurant}>
                 <View style={styles.viewRestaurantImage}>
                     <Image
