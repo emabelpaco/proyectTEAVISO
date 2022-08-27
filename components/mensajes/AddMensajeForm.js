@@ -147,7 +147,17 @@ function UploadImage(toasRef, imagesSelected, setImagesSelected) {
             horizontal
             style={styles.viewImage}
         >
-            
+            {/* {
+                size(toasRef.imagesSelected) < 10 && (
+                    <Icon
+                        type="material-community"
+                        name="camera"
+                        color="#7a7a7a"
+                        containerStyle={styles.containerIcon}
+                        onPress={imageSelect}
+                    />
+                ) 
+            } */}
             {
                 map(toasRef.imagesSelected, (imageMensaje, index) => (
                     <Avatar

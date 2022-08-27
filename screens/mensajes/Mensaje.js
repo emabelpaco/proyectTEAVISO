@@ -28,6 +28,8 @@ export default function Mensaje({ navigation, route }) {
     const toastRef = useRef()
     
     const [categoria, setCategoria] = useState(null)
+    const [segundoMensaje, setSegundoMensaje] = useState(null)
+    const [tercerMensaje, setTercerMensaje] = useState(null)
     const [activeSlide, setActiveSlide] = useState(0)
     const [isFavorite, setIsFavorite] = useState(false)
     const [userLogged, setUserLogged] = useState(false)
@@ -48,8 +50,30 @@ export default function Mensaje({ navigation, route }) {
                 console.log("ID", id)
                 const response = await getDocumentById("frases", "pIWuJZ5ug1ww7j9vZwxB")
                 if (response.statusResponse) {
-                    setCategoria(response.document)
-                    /// llamar a la colleccion de frases
+                    //setCategoria(response.document)
+                    console.log("CATEGORIAS OBTENIDAS: ", categoria)
+                    setCategoria(
+                        [
+                            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2F80ef43a3-ddde-4cd7-bed4-c86ef4be289d?alt=media&token=3aa88f00-b609-4caf-a969-6d4a6bf8ad91",
+                            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2Fb63a2d44-d27a-4cec-a6ab-589019d8a336?alt=media&token=01ec5144-cab2-4885-bf21-d47eb71d2da9",
+                            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2Fc78c62d0-94b4-47a6-b578-91753c918479?alt=media&token=0e9f0dcd-b8d0-4890-8625-a713f5df46bb",
+                            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2F64242dcb-af9c-4a22-929b-b3751a5890c3?alt=media&token=39284291-2ea5-464b-a5d9-4811d3b770d5"
+                        ]
+                    )
+                    setSegundoMensaje(
+                        [
+                            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2F80ef43a3-ddde-4cd7-bed4-c86ef4be289d?alt=media&token=3aa88f00-b609-4caf-a969-6d4a6bf8ad91",
+                            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2Fb07617fa-3e02-4b6b-8378-f2234d8b7dd0?alt=media&token=49e21cc3-32b5-4e9c-b525-41136ccb1f09",
+                            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2F0edf0884-7ee4-4af5-9355-eba584c4895e?alt=media&token=313988cc-0c7d-45a4-b0fd-f89ef5955abf"
+                        ]
+                    )
+                    setTercerMensaje(
+                        [
+                            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2F80ef43a3-ddde-4cd7-bed4-c86ef4be289d?alt=media&token=3aa88f00-b609-4caf-a969-6d4a6bf8ad91",
+                            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2F57144fc2-ebaf-45b5-9986-ee0e903336de?alt=media&token=fed9de4d-7be5-46f8-8ce4-c980178d2473"
+                        ]
+                    )
+
                 } else {
                     setCategoria({})
                     Alert.alert("Ocurrió un problema cargando los mensajes, intente más tarde.")
@@ -63,74 +87,19 @@ export default function Mensaje({ navigation, route }) {
     }
 
     return (
-        <ScrollView  horizontal style={styles.viewBody}>
-            {
-                map(categoria.images, (imageMensaje, index) => (
-                    <Avatar
-                        key={index}
-                        style={styles.miniatureStyle}
-                        source={{uri: imageMensaje}}
-                    />
-                ))
-            }
-            {/* <CarouselImages
-                images={categoria.images}
-                height={250}
-                width={250}
-                activeSlide={activeSlide}
-                setActiveSlide={setActiveSlide}
-            /> */}
-            {/* <ScrollView
-            horizontal
-            style={styles.viewImage}
-        >
-            {
-                map(categoria.images, (imageMensaje, index) => (
-                    <Avatar
-                        key={index}
-                        style={styles.miniatureStyle}
-                        source={{uri: imageMensaje}}
-                    />
-                ))
-            }
-        </ScrollView> */}
-            {/* <View style={styles.viewFavorite}>
-                <Icon
-                    type="material-community"
-                    name={ isFavorite ? "heart" : "heart-outline" }
-                    onPress={ isFavorite ? removeFavorite : addFavorite }
-                    color="#442484"
-                    size={35}
-                    underlayColor="tranparent"
-                />
-            </View> */}
-            <TitleRestaurant
-                name={categoria.name}
+        <ScrollView style={styles.viewContainer}>
+            <Text style={styles.titulo}>Hola Como estas ?</Text>
+            <UploadImage
+                toasRef={categoria}
             />
-            {/* <RestaurantInfo
-                name={restaurant.name}
-                location={restaurant.location}
-                address={restaurant.address}
-                email={restaurant.email}
-                phone={formatPhone(restaurant.callingCode, restaurant.phone)}
-                currentUser={currentUser}
-                callingCode={restaurant.callingCode}
-                phoneNoFormat={restaurant.phone}
-                setLoading={setLoading}
-                setModalNotification={setModalNotification}
-            /> */}
-            {/* <ListReviews
-                navigation={navigation}
-                idRestaurant={restaurant.id}
-            /> */}
-            {/* <SendMessage
-                modalNotification={modalNotification}
-                setModalNotification={setModalNotification}
-                setLoading={setLoading}
-                restaurant={restaurant}
-            /> */}
-            <Toast ref={toastRef} position="center" opacity={0.9}/>
-            <Loading isVisible={loading} text="Por favor espere..."/>
+            <Text style={styles.titulo}>Hola, todo bien</Text>
+            <UploadImage
+                toasRef={segundoMensaje}
+            />
+            <Text style={styles.titulo}>Hola, Buen día</Text>
+            <UploadImage
+                toasRef={tercerMensaje}
+            />
         </ScrollView>
     )
 }
@@ -226,103 +195,29 @@ function SendMessage ({ modalNotification, setModalNotification, setLoading, res
     )
 }
 
-function RestaurantInfo({ 
-    name, 
-    location, 
-    address, 
-    email, 
-    phone, 
-    currentUser, 
-    callingCode, 
-    phoneNoFormat, 
-    setLoading,
-    setModalNotification 
-}) {
-    const listInfo = [
-        { type: "addres", text: address, iconLeft: "map-marker", iconRight: "message-text-outline" },
-        { type: "phone", text: phone, iconLeft: "phone", iconRight: "whatsapp" },
-        { type: "email", text: email, iconLeft: "at" },
-    ]
-
-    const actionLeft = (type) => {
-        if (type == "phone") {
-            callNumber(phone)
-        } else if (type == "email") {
-            if (currentUser) {
-                sendEmail(email, "Interesado", `Soy ${currentUser.displayName}, estoy interesado en sus servicios`)
-            } else {
-                sendEmail(email, "Interesado", `Estoy interesado en sus servicios`)
-            }
-        }
-    }
-
-    const actionRight = (type) => {
-        if (type == "phone") {
-            if (currentUser) {
-                sendWhatsApp(`${callingCode} ${phoneNoFormat}`, `Soy ${currentUser.displayName}, estoy interesado en sus servicios`)
-            } else {
-                sendWhatsApp(`${callingCode} ${phoneNoFormat}`, `Estoy interesado en sus servicios`)
-            }
-        } else if (type == "addres") {
-            setModalNotification(true)
-        }
-    }
+function UploadImage(toasRef) {
+    console.log("entre a la funcion con : ", toasRef)
+    // const imageSelect = async() => {
+    //     const response = await loadImageFromGalery([4, 4])
+       
+    //     toasRef.setImagesSelected([...toasRef.imagesSelected, response.image])
+    // }
 
     return (
-        <View style={styles.viewRestaurantInfo}>
-            <Text style={styles.restaurantInfoTitle}>
-                Información sobre el restaurante
-            </Text>
-            {/* <MapRestaurant
-                location={location}
-                name={name}
-                height={150}
-            /> */}
+        <ScrollView
+            horizontal
+            style={styles.viewImage}
+        >
             {
-                map(listInfo, (item, index) => (
-                    <ListItem
+                map(toasRef.toasRef, (imageMensaje, index) => (
+                    <Avatar
                         key={index}
-                        style={styles.containerListItem}
-                    >
-                        <Icon
-                            type="material-community"
-                            name={item.iconLeft}
-                            color="#442484"
-                            onPress={() => actionLeft(item.type)}
-                        />
-                        <ListItem.Content>
-                            <ListItem.Title>{item.text}</ListItem.Title>
-                        </ListItem.Content>
-                        {
-                            item.iconRight && (
-                                <Icon
-                                    type="material-community"
-                                    name={item.iconRight}
-                                    color="#442484"
-                                    onPress={() => actionRight(item.type)}
-                                />
-                            )
-                        }
-                    </ListItem>
+                        style={{width: 90, height: 80}}
+                        source={{uri: imageMensaje}}
+                    />
                 ))
             }
-        </View>
-    )
-}
-
-function TitleRestaurant({ name}) {
-    return (
-        <View style={styles.viewRestaurantTitle}>
-            <View style={styles.viewRestaurantContainer}>
-                <Text style={styles.nameRestaurant}>{name}</Text>
-                {/* <Rating
-                    style={styles.rating}
-                    imageSize={20}
-                    readonly
-                    startingValue={parseFloat(rating)}
-                /> */}
-            </View>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -393,12 +288,25 @@ const styles = StyleSheet.create({
     viewImage: {
         flexDirection: "row",
         marginHorizontal: 20,
-        marginTop: 30
+        marginTop: 20,
+        // height: "100%",
+        // height: 50
+    width: 400, height: 120
     },
     miniatureStyle: {
-        width: 70,
-        right: 70,
-        marginRight: 10,
-        marginLeft: 5
+        
+        //width: 100,
+        //right: 100,
+        //marginRight: 10,
+        //marginLeft: 5
     },
+    viewContainer: {
+        height: "100%"
+    },
+    titulo: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginLeft: 15,
+        marginTop: 20
+    }
 })
