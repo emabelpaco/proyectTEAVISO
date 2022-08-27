@@ -39,6 +39,19 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
         navigation.navigate("mensaje")
     }
 
+    const crearMensaje = () => {
+        if(!validForm()) {
+            return
+        }
+        setImagesSelected([
+            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2Fd4501b61-c4a4-453d-85dd-04d0c39cfe0a?alt=media&token=255bd2d7-e1a5-4dec-a7ea-56b2d0098e21",
+            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2F1736dff7-b7b0-45af-ba18-fd7dae9a3a36?alt=media&token=f288d739-7505-448a-b6c6-4a6bac4f1de8",
+            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2Fe8b62fbc-3885-4472-baf4-4e19cf7978de?alt=media&token=acffc05c-015a-4222-a15c-60ba45a63ddc",
+            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2Fb444777b-f9d3-46f8-8307-97036cb0490e?alt=media&token=9bf5daef-6ed3-48e7-bc7e-6c7e4be80163",
+            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2F58d77112-219a-4832-b914-47bfb9569dba?alt=media&token=782343d7-38d2-490e-ab3f-038854b37cd4"   
+        ])
+    }
+
     const UploadImages = async () => {
         const imagesUrl = []
         await Promise.all(
@@ -57,7 +70,7 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
         let isValid = true
 
         if(isEmpty(formData.name)){
-            setErrorName("Debe ingresar el nombre del mensaje.")
+            setErrorName("Debe ingresar un mensaje.")
             isValid = false
         }
         // seguir validando email, phone, description
@@ -70,22 +83,23 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
 
     return (
         <ScrollView style={styles.viewContainer}>
-            <ImageMensaje
-                imageMensaje={imagesSelected[0]}
+            <UploadImagePicto
+                imagesSelected={imagesSelected}
+                setImagesSelected={setImagesSelected}
             />
             <FormAdd
                 formData={formData}
                 setFormData={setFormData}
                 errorName={errorName}
             />
-            <UploadImage
+            {/* <UploadImage
                 toasRef={toasRef}
                 imagesSelected={imagesSelected}
                 setImagesSelected={setImagesSelected}
-            />
+            /> */}
             <Button
                 title="Crear Mensaje"
-                onPress={addMensaje}
+                onPress={crearMensaje}
                 buttonStyle={styles.btnAddMensaje}
             />
         </ScrollView>
@@ -104,6 +118,33 @@ function ImageMensaje({imageMensaje}) {
                 }
             />
         </View>
+    )
+}
+
+function UploadImagePicto(imagesSelected, setImagesSelected) {
+    console.log("imagenessss: ", imagesSelected)
+    return (
+        <ScrollView
+            horizontal
+            style={styles.viewImage}
+        >
+            {
+        size(imagesSelected.imagesSelected) == 0 && (
+            <ImageMensaje
+                imageMensaje={imagesSelected[0]}
+            />
+        ) 
+    }
+    {
+         map(imagesSelected.imagesSelected, (imageMensaje, index) => (
+            <Avatar
+                key={index}
+                style={{width: 150, height: 150}}
+                source={{uri: imageMensaje}}
+            />
+        ))
+    }
+        </ScrollView>
     )
 }
 
@@ -147,7 +188,7 @@ function UploadImage(toasRef, imagesSelected, setImagesSelected) {
             horizontal
             style={styles.viewImage}
         >
-            {/* {
+            {
                 size(toasRef.imagesSelected) < 10 && (
                     <Icon
                         type="material-community"
@@ -157,7 +198,7 @@ function UploadImage(toasRef, imagesSelected, setImagesSelected) {
                         onPress={imageSelect}
                     />
                 ) 
-            } */}
+            }
             {
                 map(toasRef.imagesSelected, (imageMensaje, index) => (
                     <Avatar
@@ -224,7 +265,9 @@ const styles = StyleSheet.create({
     viewImage: {
         flexDirection: "row",
         marginHorizontal: 20,
-        marginTop: 30
+        marginTop: 30,
+        width: 400, 
+        height: 120
     },
     containerIcon: {
         alignItems: "center",
