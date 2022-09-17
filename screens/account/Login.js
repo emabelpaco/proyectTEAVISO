@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
         height: 150,
         width: "100%",
         marginBottom: 5,
+        marginTop: 100,
     },
     container: {
         marginHorizontal: 40

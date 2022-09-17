@@ -1,23 +1,59 @@
-import React from 'react'
+import React, { useState, useEffect, useContext } from "react"
+import { Text, LogBox } from "react-native";
 import { NavigationContainer } from '@react-navigation/native'
+import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import SeccioneStack from './SeccionesStack';
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import ChatStack from './ChatStack';
 import AccountStack from './AccountStack';
 import { Icon } from 'react-native-elements';
 import MensajeStack from './MensajeStack';
 import FavoritoStack from './FavoritoStack';
+import SignIn from '../screens/account/LoginExample'
+//import SignIn from '../screens/account/Login'
+import Context from "../context/Context";
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from '../utils/firebase'
+import 'firebase/auth';
+LogBox.ignoreLogs([
+    "Setting a timer",
+    "AsyncStorage has been extracted from react-native core and will be removed in a future release.",
+  ]);
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+const TabChat = createMaterialTopTabNavigator();
 
 export default function  Navigation (){
+    const [currUser, setCurrUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const {
+        theme: { colors },
+    } = useContext(Context);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          setLoading(false);
+          if (user) {
+            setCurrUser(user);
+          } else {
+            setCurrUser(false);
+          }
+        });
+        return () => unsubscribe();
+    }, []);
+    
+    if (loading) {
+        return <Text>Loading...</Text>;
+    }
+    
     const screenOptions = (route, color) => {
         let iconName
         switch (route.name) {
             case "mensaje":
                 iconName = "view-grid-outline"
                 break;
-            case "chat":
+            case "chatSeccion":
                 iconName = "chat-plus-outline"
                 break;
             case "cuenta":
@@ -39,6 +75,11 @@ export default function  Navigation (){
 
     return (
       <NavigationContainer>
+        {!currUser ? (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="signIn" component={SignIn} />
+        </Stack.Navigator>
+      ) : (
         <Tab.Navigator
             initialRouteName='cuenta'
             tabBarOptions={{
@@ -56,7 +97,7 @@ export default function  Navigation (){
                 options={{title: "Categorías"}}
             />
             <Tab.Screen
-                name="chat"
+                name="chatSeccion"
                 component={ChatStack}
                 options={{title: "Chat"}}
             />
@@ -71,7 +112,7 @@ export default function  Navigation (){
                 options={{title: "Cuenta"}}
             />
         </Tab.Navigator>
+         )}
       </NavigationContainer>
     )
-
 }
