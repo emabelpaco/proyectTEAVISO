@@ -10,6 +10,7 @@ import { Icon } from 'react-native-elements';
 import MensajeStack from './MensajeStack';
 import FavoritoStack from './FavoritoStack';
 import SignIn from '../screens/account/LoginExample'
+import Register from "../screens/account/Register";
 //import SignIn from '../screens/account/Login'
 import Context from "../context/Context";
 import { onAuthStateChanged } from 'firebase/auth'
@@ -78,6 +79,11 @@ export default function  Navigation (){
         {!currUser ? (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="signIn" component={SignIn} />
+          <Stack.Screen
+                name="register"
+                component={Register}
+                options={{title: "Registrar Usuario"}}
+                />
         </Stack.Navigator>
       ) : (
         <Tab.Navigator

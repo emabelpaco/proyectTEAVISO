@@ -1,9 +1,11 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Image, TextInput, Button } from "react-native";
+import { View, Text, Image, TextInput, Button, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
 import Context from "../../context/Context"
 import { signIn, signUp } from "../../utils/firebase";
 export default function SignIn() {
+  const navigation = useNavigation()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mode, setMode] = useState("signUp");
@@ -46,7 +48,7 @@ export default function SignIn() {
           style={{
             borderBottomColor: colors.primary,
             borderBottomWidth: 2,
-            width: 200,
+            width: 250,
           }}
         />
         <TextInput
@@ -57,13 +59,13 @@ export default function SignIn() {
           style={{
             borderBottomColor: colors.primary,
             borderBottomWidth: 2,
-            width: 200,
+            width: 250,
             marginTop: 20,
           }}
         />
         <View style={{ marginTop: 20 }}>
           <Button
-            title={mode === "signUp" ? "Sign Up" : "Sign in"}
+            title="Login"
             disabled={!password || !email}
             color={colors.secondary}
             onPress={handlePress}
@@ -75,13 +77,45 @@ export default function SignIn() {
             mode === "signUp" ? setMode("signIn") : setMode("signUp")
           }
         >
-          <Text style={{ color: colors.secondaryText }}>
-            {mode === "signUp"
-              ? "Already have an account? Sign in"
-              : "Don't have an account? Sign Up"}
+          <Text 
+            style={styles.register}
+            onPress={() => navigation.navigate("register")}
+            >
+            ¿Aún no tienes una Cuenta? 
+            <Text style={styles.btnRegister}> Regístrate </Text>
+          </Text>
+          <Text 
+            style={styles.register}
+            >
+            ¿Olvidaste tu contraseña?{" "}
+            <Text style={styles.btnRegister}>Recupérala</Text>
           </Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 }
+const styles = StyleSheet.create({
+    image: {
+        height: 150,
+        width: "100%",
+        marginBottom: 5,
+        marginTop: 100,
+    },
+    container: {
+        marginHorizontal: 40
+    },
+    divider: {
+        backgroundColor: "#4cb4eb",
+        margin: 40
+    },
+    register: {
+        marginTop: 15,
+        marginHorizontal: 10,
+        alignSelf: "center"
+    },
+    btnRegister: {
+        color: "#4cb4eb",
+        fontWeight: "bold"
+    }
+})
