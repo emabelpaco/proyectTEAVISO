@@ -14,12 +14,7 @@ export default function SignIn() {
   } = useContext(Context);
 
   async function handlePress() {
-    if (mode === "signUp") {
-      await signUp(email, password);
-    }
-    if (mode === "signIn") {
       await signIn(email, password);
-    }
   }
   return (
     <View
@@ -73,9 +68,6 @@ export default function SignIn() {
         </View>
         <TouchableOpacity
           style={{ marginTop: 15 }}
-          onPress={() =>
-            mode === "signUp" ? setMode("signIn") : setMode("signUp")
-          }
         >
           <Text 
             style={styles.register}

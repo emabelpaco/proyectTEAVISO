@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useEffect, useContext, useCallback } from "react"
 import { Text, LogBox } from "react-native";
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from "@react-navigation/stack";
@@ -16,6 +16,9 @@ import Context from "../context/Context";
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../utils/firebase'
 import 'firebase/auth';
+import Onboarding from "../screens/onboarding/Onboarding";
+import * as app from "../config";
+
 LogBox.ignoreLogs([
     "Setting a timer",
     "AsyncStorage has been extracted from react-native core and will be removed in a future release.",
@@ -35,7 +38,7 @@ export default function  Navigation (){
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
           setLoading(false);
-          if (user) {
+          if (user) { 
             setCurrUser(user);
           } else {
             setCurrUser(false);
@@ -76,13 +79,20 @@ export default function  Navigation (){
 
     return (
       <NavigationContainer>
-        {!currUser ? (
+        {!currUser && !app.primeraVez? (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="signIn" component={SignIn} />
+          <Stack.Screen 
+                name="signIn" 
+                component={SignIn} 
+                />
           <Stack.Screen
                 name="register"
                 component={Register}
                 options={{title: "Registrar Usuario"}}
+                />
+          <Stack.Screen
+                name="onboarding"
+                component={Onboarding}
                 />
         </Stack.Navigator>
       ) : (

@@ -11,6 +11,7 @@ import { registerUser } from "../../utils/actions";
 import { auth, db } from "../../utils/firebase";
 import { uploadImage } from "../../utilsContext";
 import Loading from "../Loading";
+import * as app from "../../config";
 
 export default function RegisterForm() {
 
@@ -30,6 +31,8 @@ export default function RegisterForm() {
     }
 
     const doRegisterUser = async () => {
+        app.primeraVez = true;
+        console.log("app.primeraVez", app.primeraVez)
         if(!validateData()){
             return;
         }
@@ -67,7 +70,8 @@ export default function RegisterForm() {
           updateProfile(user, userData),
           setDoc(doc(db, "users", user.uid), { ...userData, uid: user.uid }),
         ]);
-        navigation.navigate("bienvenida");
+     
+        navigation.navigate("onboarding", {formData});
     }
 
     const validateData = () => {
