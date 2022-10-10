@@ -3,7 +3,6 @@
     "name": "proyectTEAVISO",
     "slug": "proyectTEAVISO",
     "version": "1.0.0",
-    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -22,6 +21,7 @@
       "bundleIdentifier": "com.emabelpaco.teaviso"
     },
     "android": {
+      "usesCleartextTraffic": false,
       "package": "com.emabelpaco.teaviso",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -33,6 +33,7 @@
         }
       },
       "permissions": [
+        "INTERNET",
         "CAMERA_ROLL",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",

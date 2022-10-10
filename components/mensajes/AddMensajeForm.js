@@ -1,20 +1,24 @@
 import React, {useState } from "react";
-import { StyleSheet, View, ScrollView, Alert, Dimensions } from "react-native";
-import { Button, Input, Icon, Avatar, Image } from "react-native-elements";
-import CountryPicker from 'react-native-country-picker-modal';
-import { map, size, filter, isEmpty } from 'lodash';
-import { loadImageFromGalery } from "../../utils/helpers";
+import { StyleSheet, View, ScrollView, Dimensions, FlatList, Text, TouchableOpacity } from "react-native";
+import { Button, Input, Icon, Image, Overlay } from "react-native-elements";
+import { map, size, isEmpty } from 'lodash';
 import { addDocumentWithoutId, getCurrentUser, uploadImage } from "../../utils/actions";
-import uuid from 'random-uuid-v4'
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import OptionsMenu from "react-native-option-menu";
+import uuid from 'random-uuid-v4';
 
 const widthScreen = Dimensions.get("window").width
+const MoreIcon = require("../../assets/optionsV.png");
 
 export default function AddMensajeForm({toasRef, setLoading, navigation}) {
 
     const [formData, setFormData] = useState(defaultFormValue())
     const [errorName, setErrorName] = useState(null)
-    const [imagesSelected, setImagesSelected] = useState([])
-
+    const [imagesSelected, setImagesSelected] = useState(null)
+    const [inputBusqueda, setInputBusqueda] = useState(null)
+    const [respuestasSelected, setRespuestasSelected] = useState(null)
+    const [busquedaRes, setBusquedaRes] = useState(null)
+    const [isVisible, setIsVisible] = useState(false)
 
     const addMensaje = async () => {
         if(!validForm()) {
@@ -39,16 +43,22 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
         navigation.navigate("mensaje")
     }
 
+    const onBusqueda = (e) => {
+        setInputBusqueda(e.nativeEvent.text);
+    }
+
     const crearMensaje = () => {
         if(!validForm()) {
             return
         }
+        
         setImagesSelected([
-            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2Fd4501b61-c4a4-453d-85dd-04d0c39cfe0a?alt=media&token=255bd2d7-e1a5-4dec-a7ea-56b2d0098e21",
-            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2F1736dff7-b7b0-45af-ba18-fd7dae9a3a36?alt=media&token=f288d739-7505-448a-b6c6-4a6bac4f1de8",
-            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2Fe8b62fbc-3885-4472-baf4-4e19cf7978de?alt=media&token=acffc05c-015a-4222-a15c-60ba45a63ddc",
-            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2Fb444777b-f9d3-46f8-8307-97036cb0490e?alt=media&token=9bf5daef-6ed3-48e7-bc7e-6c7e4be80163",
-            "https://firebasestorage.googleapis.com/v0/b/proyectteaviso.appspot.com/o/frases%2F58d77112-219a-4832-b914-47bfb9569dba?alt=media&token=782343d7-38d2-490e-ab3f-038854b37cd4"   
+            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/3415", text: "¿"},
+            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/11351", text: "que"},
+            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/5441", text: "quieres"},
+            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/28205", text: "almorzar"},
+            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/3415", text: "¿"},
+            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/11351", text: "que"}
         ])
     }
 
@@ -73,35 +83,166 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
             setErrorName("Debe ingresar un mensaje.")
             isValid = false
         }
-        // seguir validando email, phone, description
-
         return isValid
     }
 
     const clearErrors = () => {
+        setErrorName(null)
+    }
+    const editPost = () => {
+        console.log("Editar")
+        setErrorName(null)
+    }
+    const deletePost = () => {
+        console.log("Guardar")
+        setErrorName(null)
+    }
+    const addPost = () => {
+        setIsVisible(!isVisible)
+        setBusquedaRes(null);
+    }
+
+    const buscarPictograma = () => {
+        setBusquedaRes([
+            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/25486", text: "tallarines"}
+        ])
+    }
+
+    const confirmarRespuesta = () => {
+        setInputBusqueda(null)
+        setIsVisible(false)
+        setBusquedaRes(null);
+        setRespuestasSelected([
+            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/25486", text: "Tallarines"},
+            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/2573", text: "Sopa"},
+            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/2419", text: "Hamburguesa"}
+        ])  
+    }
+
+    const cancelarRespuesta = () => {
+        setInputBusqueda(null)
+        setBusquedaRes(null);
+        setIsVisible(false);
     }
 
     return (
         <ScrollView style={styles.viewContainer}>
-            <UploadImagePicto
-                imagesSelected={imagesSelected}
-                setImagesSelected={setImagesSelected}
-            />
-            <FormAdd
-                formData={formData}
-                setFormData={setFormData}
-                errorName={errorName}
-            />
-            {/* <UploadImage
-                toasRef={toasRef}
-                imagesSelected={imagesSelected}
-                setImagesSelected={setImagesSelected}
-            /> */}
-            <Button
-                title="Crear Mensaje"
-                onPress={crearMensaje}
-                buttonStyle={styles.btnAddMensaje}
-            />
+            { imagesSelected ? (
+                <View>
+                    <OptionsMenu
+                        button={MoreIcon}
+                        buttonStyle={{ width: 70, height: 26, marginTop: 15, resizeMode: "contain", margin: 7.5}}
+                        destructiveIndex={1}
+                        options={["Editar", "Guardar", "Agregar respuesta", "Cancelar"]}
+                        actions={[editPost, deletePost, addPost]}
+                    />
+                    <UploadImagePicto
+                        imagesSelected={imagesSelected}
+                        setImagesSelected={setImagesSelected}
+                    />
+                    { respuestasSelected ? (
+                        <View>
+                            <View>
+                            <Text style={styles.textOpciones}>Opciones</Text>
+                            <TouchableOpacity
+                                onPress={() => addPost()}
+                                style={{
+                                    position: "absolute",
+                                    right: 20,
+                                    margin:-10,
+                                    bottom: 20,
+                                    borderRadius: 60,
+                                    width: 45,
+                                    height: 45,
+                                    backgroundColor: "#4cb4eb",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <MaterialCommunityIcons
+                                    name="plus"
+                                    size={30}
+                                    color="white"
+                                    style={{ transform: [{ scaleX: -1 }] }}
+                                />
+                            </TouchableOpacity>
+                            </View>
+                            <UploadRespuestasImagePicto
+                                respuestasSelected={respuestasSelected}
+                                setRespuestasSelected={setRespuestasSelected}
+                            />
+                        </View>
+                    ) : (
+                        <View></View>
+                    )}
+                    <Overlay
+                        isVisible={isVisible}
+                        onBackdropPress={addPost}
+                        windowBackgroundColor="rgba(255, 255, 255, .5)"
+                        overlayBackgroundColor="black"
+                        overlayStyle={styles.overlay}
+                        width="auto"
+                        height="auto"
+                    >
+                        {
+                            busquedaRes ? (
+                                <Image
+                                source={{uri: busquedaRes[0].image}}
+                                style={{
+                                    width: 120,
+                                    height: 160,
+                                    borderWidth: 2,
+                                    borderColor: "black",
+                                    resizeMode: "contain",
+                                    margin: 20,
+                                }}
+                                />
+                            ):(<Text></Text>)
+                        }
+                        <Input
+                            placeholder="Busqueda de una imagen"
+                            onChange={(e) => onBusqueda(e)}
+                        />
+                        {
+                            busquedaRes ? (
+                                <View style={styles.alternativeLayoutButtonContainer}>
+                                    <Button
+                                    title="Aceptar"
+                                    onPress={confirmarRespuesta}
+                                    buttonStyle={styles.btnAddMensaje}
+                                    />
+                                    <Button
+                                    title="Cancelar"
+                                    onPress={cancelarRespuesta}
+                                    buttonStyle={styles.btnAddMensaje}
+                                    />
+                                </View>
+                            ):(
+                                <Button
+                                title="Buscar"
+                                onPress={buscarPictograma}
+                                buttonStyle={styles.btnAddMensaje}
+                                />
+                            )
+                        }
+                        
+                    </Overlay>
+                </View>  
+            ) : (
+                <View>
+                    <FormAdd
+                    formData={formData}
+                    setFormData={setFormData}
+                    errorName={errorName}
+                    />
+                    <Button
+                    title="Crear Mensaje"
+                    onPress={crearMensaje}
+                    buttonStyle={styles.btnAddMensaje}
+                    />
+                </View>
+                
+            )}
         </ScrollView>
     )
 }
@@ -123,9 +264,15 @@ function ImageMensaje({imageMensaje}) {
 
 function UploadImagePicto(imagesSelected, setImagesSelected) {
     console.log("imagenessss: ", imagesSelected)
+    const widths = Dimensions.get("window").width
+    const heightScreen = Dimensions.get("window").height
+    const isLandscape = widths > heightScreen;
+    console.log("hei: ", heightScreen)
+    console.log("widths: ", widths)
+    console.log("isLandscape: ", isLandscape)
+
     return (
         <ScrollView
-            horizontal
             style={styles.viewImage}
         >
             {
@@ -136,79 +283,103 @@ function UploadImagePicto(imagesSelected, setImagesSelected) {
         ) 
     }
     {
-         map(imagesSelected.imagesSelected, (imageMensaje, index) => (
-            <Avatar
-                key={index}
-                style={{width: 150, height: 150}}
-                source={{uri: imageMensaje}}
+        <View>
+            <FlatList
+                data={imagesSelected.imagesSelected}
+                style={{width:"100%"}}
+                key={"3"}
+                numColumns={3}
+                renderItem={({ item }) => (
+                    <View>
+                        <Image
+                            source={{uri: item.image}}
+                            style={{
+                                width: 120,
+                                height: 160,
+                                borderWidth: 2,
+                                borderColor: "black",
+                                resizeMode: "contain",
+                                margin: 6,
+                            }}
+                            keyExtractor={(item) => item.id}
+                        />
+                        <Text style={styles.textInfo}>{item.text}</Text>
+                    </View>
+                )}
             />
-        ))
-    }
+            {/* <Button
+                title="Agregar Respuesta"
+                onPress={agregarRespuesta}
+                buttonStyle={styles.btnAddMensaje}
+            /> */}
+        </View>
+}
         </ScrollView>
     )
 }
 
-function UploadImage(toasRef, imagesSelected, setImagesSelected) {
-    const imageSelect = async() => {
-        const response = await loadImageFromGalery([4, 4])
-        if(!response.status) {
-            toasRef.current.show("No has seleccionado ninguna imagen", 3000)
-            return
-        }
-        
-        toasRef.setImagesSelected([...toasRef.imagesSelected, response.image])
+function UploadRespuestasImagePicto(respuestasSelected, setRespuestasSelected) {
+    const [isVisibleRes, setIsVisibleRes] = useState(false)
+    const [resImage, setResImage] = useState(false)
+    const pressRespuesta = (data) => {
+        setIsVisibleRes(true)
+        setResImage(data) 
     }
-
-    const removeImage = (image) => {
-        Alert.alert(
-            "Eliminar Imagen",
-            "¿Estas seguro de eliminar la imagen?",
-            [
-                {
-                    text: "No",
-                    style: "cancel",
-                },
-                {
-                    text: "Sí",
-                    onPress: () => {
-                        toasRef.setImagesSelected(
-                            filter(toasRef.imagesSelected, (imageUrl) => imageUrl !== image)
-                        )
-                    }
-                }
-            ],
-            {
-                cancelable: true
-            }
-        )
-    }
-
+    const toggleOverlay = () => {
+        setIsVisibleRes(!isVisibleRes);
+      };
     return (
         <ScrollView
-            horizontal
             style={styles.viewImage}
         >
-            {
-                size(toasRef.imagesSelected) < 10 && (
-                    <Icon
-                        type="material-community"
-                        name="camera"
-                        color="#7a7a7a"
-                        containerStyle={styles.containerIcon}
-                        onPress={imageSelect}
+            <View>
+            <FlatList
+                data={respuestasSelected.respuestasSelected}
+                style={{width:"100%"}}
+                key={"3"}
+                numColumns={3}
+                renderItem={({ item }) => (
+                    <TouchableOpacity onPress={() => pressRespuesta(item)}>
+                        <View>
+                        <Image
+                            source={{uri: item.image}}
+                            style={{
+                                width: 120,
+                                height: 160,
+                                borderWidth: 2,
+                                borderColor: "black",
+                                resizeMode: "contain",
+                                margin: 6,
+                            }}
+                            keyExtractor={(item) => item.id}
+                        />
+                        <Text style={styles.textInfo}>{item.text}</Text>
+                    </View>
+                    </TouchableOpacity> 
+                )}
+            />
+            { resImage ? (
+                <Overlay
+                isVisible={isVisibleRes}
+                onBackdropPress={toggleOverlay}
+                >
+                    <Image
+                    source={{uri: resImage.image}}
+                    style={{
+                        width: 120,
+                        height: 160,
+                        borderWidth: 2,
+                        borderColor: "black",
+                        resizeMode: "contain",
+                        margin: 20,
+                    }}
                     />
-                ) 
+                    <Text style={styles.textInfo}>{resImage.text}</Text>
+                </Overlay>
+            ) : 
+                (<Text></Text>)
             }
-            {
-                map(toasRef.imagesSelected, (imageMensaje, index) => (
-                    <Avatar
-                        key={index}
-                        style={styles.miniatureStyle}
-                        source={{uri: imageMensaje}}
-                        onPress={() => removeImage(imageMensaje)}
-                    />
-                ))
-            }
+        </View>
         </ScrollView>
     )
 }
@@ -225,7 +396,8 @@ function FormAdd(formData, setFormData, errorName, errorDescription, errorEmail,
     return (
         <View styles={styles.viewForm}>
             <Input
-                placeholder="Nombre del mensaje"
+                style={{marginTop:200}}
+                placeholder="Escribí el mensaje"
                 defaultValue={formData.formData.name}
                 onChange={(e) => onChange(e, "name")}
                 errorMessage={formData.errorName}
@@ -263,11 +435,11 @@ const styles = StyleSheet.create({
         backgroundColor: "#4cb4eb"
     },
     viewImage: {
-        flexDirection: "row",
-        marginHorizontal: 20,
-        marginTop: 30,
-        width: 400, 
-        height: 120
+        // flexDirection: "row",
+        // marginHorizontal: 20,
+        // marginTop: 30,
+        // width: 400, 
+        // height: 120
     },
     containerIcon: {
         alignItems: "center",
@@ -287,5 +459,46 @@ const styles = StyleSheet.create({
         alignItems: "center",
         height: 200,
         marginBottom: 20
-    }
+    },
+    textInfo: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        alignSelf: "center"
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'right',
+        marginTop: 40,
+    },
+    boldFont: {
+        fontFamily: 'Nunito-Bold',
+    },
+    containerIcon: {
+        // alignItems: "center",
+        // justifyContent: "center",
+        // marginRight: 80,
+        // height: 70,
+        // width: 70,
+        // backgroundColor: "#e3e3e3"
+    },
+    textOpciones: {
+        color:"#4cb4eb",
+        fontWeight: 'bold',
+        fontSize: 30,
+        lineHeight: 70,
+        marginLeft:15
+        //alignSelf: "center"
+    },
+    overlay: {
+        alignItems: "center",
+        justifyContent: "center",
+        height: 400,
+        width: 300,
+    },
+    alternativeLayoutButtonContainer: {
+        margin: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+      }
 })
