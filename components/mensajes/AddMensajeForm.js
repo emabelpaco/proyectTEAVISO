@@ -7,8 +7,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import OptionsMenu from "react-native-option-menu";
 import SelectList from 'react-native-dropdown-select-list'
 import uuid from 'random-uuid-v4';
-import Api from '../../utils/api'
-import { addExistingContactToGroupAsync } from "expo-contacts";
 import axios from 'axios'
 
 const widthScreen = Dimensions.get("window").width
@@ -16,39 +14,36 @@ const MoreIcon = require("../../assets/optionsV.png");
 
 export default function AddMensajeForm({toasRef, setLoading, navigation}) {
 
-    useEffect(() => {
-        fetchApiGetCategorias()
-    }, [])
-
-    const fetchApiGetCategorias = async () => {
-        console.log("fetch api categorias")
-        try {
-            const res = await axios.get('http://192.168.0.116:3000/api/users/getCategoriasByEmail', {params: {email: "dewey.paco@gmail.com"}})
-            console.log(res.data.data.docs)
-        } catch (error){
-            console.log(error)
-        }
-    }
-
     const fetchApiBuscarFrasePicto = async () => {
-        console.log("fetch api por pictogramas")
+        console.log("fetch api por frase - pictogramas")
         try {
             const res = await axios.get('http://192.168.0.116:3000/api/users/searchFrasePictograma', {params: {mensaje: formData.name}})
-            setearPictogrmas(res.data)
+            setearPictogramas(res.data)
         } catch (error){
             console.log(error)
         }
     }
 
-    const setearPictogrmas = (data) => {
+    const fetchApiBuscarPalabraPicto = async () => {
+        console.log("fetch api por palabra - pictogramas")
+        try {
+            const res = await axios.get('http://192.168.0.116:3000/api/users/searchFrasePictograma', {params: {mensaje: inputBusqueda}})
+            setearPictogramaRespuesta(res.data)
+        } catch (error){
+            console.log(error)
+        }
+    }
+
+    const setearPictogramas = (data) => {
         const urlImage = "http://hypatia.fdi.ucm.es/conversor/Pictos/"
         const arrayData = data.data
         var dataPicto = []
         var numImage;
         var textImage;
         arrayData.forEach(element => {
+            var arrayImages = element.split('[').pop().split(']')[0];
             var bodyImage = {}
-            numImage = element.split('[').pop().split(',')[0];
+            numImage = arrayImages.substring(0,4);
             textImage = element.substring(element.indexOf(']') + 2);
             bodyImage.image = urlImage + numImage;
             bodyImage.text = textImage;
@@ -56,6 +51,32 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
         });
         setImagesSelected(dataPicto)
     }
+
+    const setearPictogramaRespuesta = (data) => {
+        const urlImage = "http://hypatia.fdi.ucm.es/conversor/Pictos/"
+        const arrayData = data.data
+        var dataPicto = []
+        var numImage;
+        var textImage;
+        arrayData.forEach(element => {
+            var arrayImages = element.split('[').pop().split(']')[0];
+            var bodyImage = {}
+            numImage = arrayImages.substring(0,4);
+            textImage = element.substring(element.indexOf(']') + 2);
+            bodyImage.image = urlImage + numImage;
+            bodyImage.text = textImage;
+            dataPicto.push(bodyImage)
+        });
+        if (busquedaRes == null) {
+            setBusquedaRes(dataPicto)
+        } 
+        else  {
+            dataPicto = busquedaRes
+            dataPicto.push(bodyImage)
+            setBusquedaRes(dataPicto)
+        }   
+    }
+
     const [formData, setFormData] = useState(defaultFormValue())
     const [errorName, setErrorName] = useState(null)
     const [imagesSelected, setImagesSelected] = useState(null)
@@ -140,6 +161,8 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
     const editPost = () => {
         console.log("Editar")
         setImagesSelected(null)
+        // por el momento borrar las respuestas al cambiar el mensaje
+        setRespuestasSelected(null)
     }
     const savePost = () => {
         console.log("Guardar")
@@ -163,20 +186,21 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
     }
 
     const buscarPictograma = () => {
-        setBusquedaRes([
-            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/25486", text: "tallarines"}
-        ])
+        // validar input busqueda que no sean mas de dos palabras
+        fetchApiBuscarPalabraPicto()
     }
 
     const confirmarRespuesta = () => {
         setInputBusqueda(null)
         setIsVisible(false)
         setBusquedaRes(null);
-        setRespuestasSelected([
-            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/25486", text: "Tallarines"},
-            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/2573", text: "Sopa"},
-            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/2419", text: "Hamburguesa"}
-        ])  
+        if (respuestasSelected == null) {
+            setRespuestasSelected(busquedaRes)
+        } else {
+            var data = respuestasSelected
+            data.push(busquedaRes[0])
+            setRespuestasSelected(data)
+        } 
     }
 
     const cancelarRespuesta = () => {
@@ -260,7 +284,7 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
                             ):(<Text></Text>)
                         }
                         <Input
-                            placeholder="Busqueda de una imagen"
+                            placeholder="Busqueda de un pictograma"
                             onChange={(e) => onBusqueda(e)}
                         />
                         {

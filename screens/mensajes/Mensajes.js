@@ -6,6 +6,7 @@ import ListMensajes from "../../components/mensajes/ListMensajes";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import firebase from "firebase/compat/app";
 import { size } from 'lodash'
+import axios from 'axios'
 import { getMensajes } from '../../utils/actions'
 
 export default function Mensaje() {
@@ -21,23 +22,37 @@ export default function Mensaje() {
         firebase.auth().onAuthStateChanged((userInfo) => {
             userInfo ? setUser(userInfo) : setUser(false)
         })
+        fetchApiGetCategorias()
     }, [])
 
-    useFocusEffect(
-        useCallback(() => {
-            async function getData(){
-                setLoading(true)
-                const response = await getMensajes(limitMensajes)
-                if(response.statusResponse) {
-                    setStartMensaje(response.startMensaje)
-                    setMensajes(response.mensajes)
-                }
-                setLoading(false)
-            }
-            getData()
+    const fetchApiGetCategorias = async () => {
+        console.log("fetch api categorias")
+        try {
+            const res = await axios.get('http://192.168.0.116:3000/api/users/getCategoriasByEmail', {params: {email: "dewey.paco@gmail.com"}})
+            console.log(res.data.data.docs[0].categorias)
+            setMensajes(res.data.data.docs[0].categorias)
+        } catch (error){
+            console.log(error)
+        }
+    }
+
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         async function getData(){
+    //             setLoading(true)
+    //             const response = await getMensajes(limitMensajes)
+    //             if(response.statusResponse) {
+    //                 console.log("respuesta de getMensaje ", response.startMensaje)
+    //                 console.log("respuesta de getMensaje ", response.mensajes)
+    //                 setStartMensaje(response.startMensaje)
+    //                 setMensajes(response.mensajes)
+    //             }
+    //             setLoading(false)
+    //         }
+    //         getData()
             
-        }, [])
-    )
+    //     }, [])
+    // )
 
     const handleLoadMore = async() => {
         if (!startMensaje) {

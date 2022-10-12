@@ -2,7 +2,6 @@ import { size } from 'lodash'
 import React from 'react'
 import { ActivityIndicator, FlatList, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { Image } from 'react-native-elements'
-import { formatPhone } from '../../utils/helpers'
 
 export default function ListMensajes({ mensajes, navigation, handleLoadMore }) {
     return (
@@ -21,12 +20,12 @@ export default function ListMensajes({ mensajes, navigation, handleLoadMore }) {
 }
 
 function Mensaje({ mensaje, navigation, handleLoadMore }) {
-    const { id, images, name, address, description, phone, callingCode } = mensaje.item
-    const imageRestaurant = images[0]
+    const imagenCategoria = mensaje.item.imageCategoria
+    const primeraFrase = mensaje.item.mensajes[0].nameMensaje
 
     const goFrases = () => {
-        navigation.navigate("frases", { id, name })  // con parametros el id y el nombre de categoria
-        //navigation.navigate("frases")
+        var param = mensaje.item
+        navigation.navigate("frases", { param })  // con parametros el id y el nombre de categoria
     } 
 
     return (
@@ -36,19 +35,18 @@ function Mensaje({ mensaje, navigation, handleLoadMore }) {
                     <Image
                         resizeMode="cover"
                         PlaceholderContent={<ActivityIndicator color="#fff"/>}
-                        source={{ uri: imageRestaurant }}
+                        source={{ uri: imagenCategoria }}
                         style={styles.imageRestaurant}
                     />
                 </View>
                 <View>
-                    <Text style={styles.restaurantTitle}>{name}</Text>
-                    <Text style={styles.restaurantInformation}>{address}</Text>
-                    {/* <Text style={styles.restaurantInformation}>{formatPhone(callingCode, phone)}</Text> */}
+                    <Text style={styles.restaurantTitle}>{mensaje.item.nameCategoria}</Text>
+                    <Text style={styles.restaurantInformation}>{primeraFrase}</Text>
                     <Text style={styles.restaurantDescription}>
                         {
-                            size(description) > 0
-                                ? `${description.substr(0, 60)}...`
-                                : description
+                            size(primeraFrase) > 0
+                                ? `${primeraFrase.substr(0, 20)}...`
+                                : primeraFrase
                         }
                     </Text>
                 </View>
