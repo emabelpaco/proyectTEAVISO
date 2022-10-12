@@ -1,17 +1,61 @@
-import React, {useState } from "react";
+import React, {useEffect, useState } from "react";
 import { StyleSheet, View, ScrollView, Dimensions, FlatList, Text, TouchableOpacity } from "react-native";
-import { Button, Input, Icon, Image, Overlay } from "react-native-elements";
+import { Button, Input, Image, Overlay } from "react-native-elements";
 import { map, size, isEmpty } from 'lodash';
 import { addDocumentWithoutId, getCurrentUser, uploadImage } from "../../utils/actions";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import OptionsMenu from "react-native-option-menu";
+import SelectList from 'react-native-dropdown-select-list'
 import uuid from 'random-uuid-v4';
+import Api from '../../utils/api'
+import { addExistingContactToGroupAsync } from "expo-contacts";
+import axios from 'axios'
 
 const widthScreen = Dimensions.get("window").width
 const MoreIcon = require("../../assets/optionsV.png");
 
 export default function AddMensajeForm({toasRef, setLoading, navigation}) {
 
+    useEffect(() => {
+        fetchApiGetCategorias()
+    }, [])
+
+    const fetchApiGetCategorias = async () => {
+        console.log("fetch api categorias")
+        try {
+            const res = await axios.get('http://192.168.0.116:3000/api/users/getCategoriasByEmail', {params: {email: "dewey.paco@gmail.com"}})
+            console.log(res.data.data.docs)
+        } catch (error){
+            console.log(error)
+        }
+    }
+
+    const fetchApiBuscarFrasePicto = async () => {
+        console.log("fetch api por pictogramas")
+        try {
+            const res = await axios.get('http://192.168.0.116:3000/api/users/searchFrasePictograma', {params: {mensaje: formData.name}})
+            setearPictogrmas(res.data)
+        } catch (error){
+            console.log(error)
+        }
+    }
+
+    const setearPictogrmas = (data) => {
+        const urlImage = "http://hypatia.fdi.ucm.es/conversor/Pictos/"
+        const arrayData = data.data
+        var dataPicto = []
+        var numImage;
+        var textImage;
+        arrayData.forEach(element => {
+            var bodyImage = {}
+            numImage = element.split('[').pop().split(',')[0];
+            textImage = element.substring(element.indexOf(']') + 2);
+            bodyImage.image = urlImage + numImage;
+            bodyImage.text = textImage;
+            dataPicto.push(bodyImage)
+        });
+        setImagesSelected(dataPicto)
+    }
     const [formData, setFormData] = useState(defaultFormValue())
     const [errorName, setErrorName] = useState(null)
     const [imagesSelected, setImagesSelected] = useState(null)
@@ -19,47 +63,51 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
     const [respuestasSelected, setRespuestasSelected] = useState(null)
     const [busquedaRes, setBusquedaRes] = useState(null)
     const [isVisible, setIsVisible] = useState(false)
+    const [isVisibleSave, setIsVisibleSave] = useState(false)
+    const [search, setSearch] = useState('')
+    const [selected, setSelected] = React.useState("");
+    const [categoriaSelect, setCategoriaSelect] = useState('')
+    const [nuevaCategoria, setNuevaCategoria] = useState('')
+    const [isVisibleNuevaCategoria, setIsVisibleNuevaCategoria] = useState(false)
 
+    const data = [
+        {key:'1',value:'Jammu & Kashmir'},
+        {key:'2',value:'Gujrat'},
+        {key:'3',value:'Maharashtra'},
+        {key:'4',value:'Goa'},
+        {key:'1000',value:'Nueva Categoría'},
+      ];
     const addMensaje = async () => {
-        if(!validForm()) {
-            return
+        if (selected == 1000 && nuevaCategoria == '') {
+            console.log("debe ingresar el nombre de la categoria")
         }
-        setLoading(true)
-        const responseUploadImages = await UploadImages()
-        const mensaje = {
-            name: formData.name,
-            images: responseUploadImages,
-            createAdd: new Date(),
-            createBy: getCurrentUser().uid
-        }
-        const responseAddDocument = await addDocumentWithoutId("frases", mensaje)
-        setLoading(false)
+        //setLoading(true)
+        // const responseUploadImages = await UploadImages()
+        // const mensaje = {
+        //     name: formData.name,
+        //     images: responseUploadImages,
+        //     createAdd: new Date(),
+        //     createBy: getCurrentUser().uid
+        // }
+        // const responseAddDocument = await addDocumentWithoutId("frases", mensaje)
+        // //setLoading(false)
 
-        if (!responseAddDocument.statusResponse) {
-            toasRef.current.show("Error al crear la frase, intente más tarde", 3000)
-            return
-        }
-        
-        navigation.navigate("mensaje")
+        // if (!responseAddDocument.statusResponse) {
+        //     toasRef.current.show("Error al crear la frase, intente más tarde", 3000)
+        //     return
+        // }
+        setIsVisibleSave(false)
     }
 
     const onBusqueda = (e) => {
         setInputBusqueda(e.nativeEvent.text);
     }
 
-    const crearMensaje = () => {
+    const crearMensaje = async () => {
         if(!validForm()) {
             return
         }
-        
-        setImagesSelected([
-            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/3415", text: "¿"},
-            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/11351", text: "que"},
-            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/5441", text: "quieres"},
-            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/28205", text: "almorzar"},
-            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/3415", text: "¿"},
-            {image: "http://hypatia.fdi.ucm.es/conversor/Pictos/11351", text: "que"}
-        ])
+        fetchApiBuscarFrasePicto()
     }
 
     const UploadImages = async () => {
@@ -91,11 +139,23 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
     }
     const editPost = () => {
         console.log("Editar")
-        setErrorName(null)
+        setImagesSelected(null)
     }
-    const deletePost = () => {
+    const savePost = () => {
         console.log("Guardar")
-        setErrorName(null)
+        setIsVisibleSave(!isVisibleSave)
+    }
+    const selectCategoria = (categoria) => {
+        console.log("categoria ", categoria)
+        setCategoriaSelect(categoria) // id de la categoria
+        if (categoria == 1000) {
+            setIsVisibleNuevaCategoria(true)
+        } else {
+            setIsVisibleNuevaCategoria(false)
+        }
+    }
+    const onNuevaCategoria = (e) => {
+        setNuevaCategoria(e.nativeEvent.text);
     }
     const addPost = () => {
         setIsVisible(!isVisible)
@@ -134,7 +194,7 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
                         buttonStyle={{ width: 70, height: 26, marginTop: 15, resizeMode: "contain", margin: 7.5}}
                         destructiveIndex={1}
                         options={["Editar", "Guardar", "Agregar respuesta", "Cancelar"]}
-                        actions={[editPost, deletePost, addPost]}
+                        actions={[editPost, savePost, addPost]}
                     />
                     <UploadImagePicto
                         imagesSelected={imagesSelected}
@@ -227,6 +287,44 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
                         }
                         
                     </Overlay>
+                    <Overlay
+                        isVisible={isVisibleSave}
+                        onBackdropPress={savePost}
+                        //overlayStyle={styles.overlay}
+                        width="auto"
+                        height="auto"
+                    >
+                        <View>
+                        <Text style={{ fontWeight: 'bold' }}>Seleccione una categoría existente ó la opción "Nueva Categoría"</Text>
+                        <Text style={{ marginTop: 30}}>Seleccione una Categoría</Text>
+                        <SelectList 
+                            onSelect={() => selectCategoria(selected)}
+                            setSelected={setSelected} 
+                            data={data}  
+                            search={false} 
+                            boxStyles={{borderRadius:0}}
+                            placeholder={"Opción"}
+                        />
+                        { isVisibleNuevaCategoria ? (
+                            <View>
+                                <Input
+                                    style={{ marginTop: 30}}
+                                    placeholder="Nueva categoría"
+                                    onChange={(e) => onNuevaCategoria(e)}
+                                />
+                            </View>
+                        ) : (
+                            <Text></Text>
+                        )
+                        }
+                        <Button
+                            title="Guardar"
+                            onPress={addMensaje}
+                            buttonStyle={styles.btnAddMensaje}
+                        />
+                        </View>
+                       
+                    </Overlay>
                 </View>  
             ) : (
                 <View>
@@ -263,13 +361,13 @@ function ImageMensaje({imageMensaje}) {
 }
 
 function UploadImagePicto(imagesSelected, setImagesSelected) {
-    console.log("imagenessss: ", imagesSelected)
-    const widths = Dimensions.get("window").width
-    const heightScreen = Dimensions.get("window").height
-    const isLandscape = widths > heightScreen;
-    console.log("hei: ", heightScreen)
-    console.log("widths: ", widths)
-    console.log("isLandscape: ", isLandscape)
+    // console.log("imagenessss: ", imagesSelected)
+    // const widths = Dimensions.get("window").width
+    // const heightScreen = Dimensions.get("window").height
+    // const isLandscape = widths > heightScreen;
+    // console.log("hei: ", heightScreen)
+    // console.log("widths: ", widths)
+    // console.log("isLandscape: ", isLandscape)
 
     return (
         <ScrollView
@@ -307,13 +405,8 @@ function UploadImagePicto(imagesSelected, setImagesSelected) {
                     </View>
                 )}
             />
-            {/* <Button
-                title="Agregar Respuesta"
-                onPress={agregarRespuesta}
-                buttonStyle={styles.btnAddMensaje}
-            /> */}
         </View>
-}
+    }
         </ScrollView>
     )
 }
@@ -419,17 +512,6 @@ const styles = StyleSheet.create({
     viewForm: {
         marginHorizontal: 10
     },
-    textArea: {
-        height: 100,
-        width: "100%"
-    },
-    phoneView: {
-        width: "80%",
-        flexDirection: "row"
-    },
-    inputPhone: {
-        width: "80%"
-    },
     btnAddMensaje: {
         margin: 20,
         backgroundColor: "#4cb4eb"
@@ -441,20 +523,6 @@ const styles = StyleSheet.create({
         // width: 400, 
         // height: 120
     },
-    containerIcon: {
-        alignItems: "center",
-        justifyContent: "center",
-        marginRight: 80,
-        height: 70,
-        width: 70,
-        backgroundColor: "#e3e3e3"
-    },
-    miniatureStyle: {
-        width: 70,
-        right: 70,
-        marginRight: 10,
-        marginLeft: 5
-    },
     viewPhoto: {
         alignItems: "center",
         height: 200,
@@ -464,23 +532,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         alignSelf: "center"
-    },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'right',
-        marginTop: 40,
-    },
-    boldFont: {
-        fontFamily: 'Nunito-Bold',
-    },
-    containerIcon: {
-        // alignItems: "center",
-        // justifyContent: "center",
-        // marginRight: 80,
-        // height: 70,
-        // width: 70,
-        // backgroundColor: "#e3e3e3"
     },
     textOpciones: {
         color:"#4cb4eb",
