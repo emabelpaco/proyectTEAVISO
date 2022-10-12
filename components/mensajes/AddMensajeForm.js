@@ -6,13 +6,14 @@ import { addDocumentWithoutId, getCurrentUser, uploadImage } from "../../utils/a
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import OptionsMenu from "react-native-option-menu";
 import SelectList from 'react-native-dropdown-select-list'
+import Loading from '../../components/Loading'
 import uuid from 'random-uuid-v4';
 import axios from 'axios'
 
 const widthScreen = Dimensions.get("window").width
 const MoreIcon = require("../../assets/optionsV.png");
 
-export default function AddMensajeForm({toasRef, setLoading, navigation}) {
+export default function AddMensajeForm() {
 
     const fetchApiBuscarFrasePicto = async () => {
         console.log("fetch api por frase - pictogramas")
@@ -50,6 +51,7 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
             dataPicto.push(bodyImage)
         });
         setImagesSelected(dataPicto)
+        setLoading(false)
     }
 
     const setearPictogramaRespuesta = (data) => {
@@ -75,6 +77,7 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
             dataPicto.push(bodyImage)
             setBusquedaRes(dataPicto)
         }   
+        setLoading(false)
     }
 
     const [formData, setFormData] = useState(defaultFormValue())
@@ -90,6 +93,7 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
     const [categoriaSelect, setCategoriaSelect] = useState('')
     const [nuevaCategoria, setNuevaCategoria] = useState('')
     const [isVisibleNuevaCategoria, setIsVisibleNuevaCategoria] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const data = [
         {key:'1',value:'Jammu & Kashmir'},
@@ -125,6 +129,7 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
     }
 
     const crearMensaje = async () => {
+        setLoading(true)
         if(!validForm()) {
             return
         }
@@ -159,17 +164,14 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
         setErrorName(null)
     }
     const editPost = () => {
-        console.log("Editar")
         setImagesSelected(null)
         // por el momento borrar las respuestas al cambiar el mensaje
         setRespuestasSelected(null)
     }
     const savePost = () => {
-        console.log("Guardar")
         setIsVisibleSave(!isVisibleSave)
     }
     const selectCategoria = (categoria) => {
-        console.log("categoria ", categoria)
         setCategoriaSelect(categoria) // id de la categoria
         if (categoria == 1000) {
             setIsVisibleNuevaCategoria(true)
@@ -186,6 +188,7 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
     }
 
     const buscarPictograma = () => {
+        setLoading(true)
         // validar input busqueda que no sean mas de dos palabras
         fetchApiBuscarPalabraPicto()
     }
@@ -211,6 +214,7 @@ export default function AddMensajeForm({toasRef, setLoading, navigation}) {
 
     return (
         <ScrollView style={styles.viewContainer}>
+            <Loading isVisible={loading} text="Cargando..."/>
             { imagesSelected ? (
                 <View>
                     <OptionsMenu
