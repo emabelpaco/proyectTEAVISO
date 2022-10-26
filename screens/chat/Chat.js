@@ -224,6 +224,11 @@ export default function Chat() {
     setIsVisible(true)
   }
 
+  const addPost = () => {
+    setIsVisible(!isVisible)
+    setBusquedaRes(null);
+  }
+
   return (
     <ImageBackground
       resizeMode="cover"
@@ -260,46 +265,19 @@ export default function Chat() {
                 width: 40,
                 borderRadius: 40,
                 backgroundColor: colors.primary,
+                borderWidth: 1,
                 //width:90,
                 marginLeft:350,
                 //alignItems: "left",
                 justifyContent: "center",
                 marginBottom: 5,
               }}
-              onPress={
-                handlePictogramaMessage
-                // if (text && onSend) {
-                //   onSend(
-                //     {
-                //       text: text.trim(),
-                //       user,
-                //       _id: messageIdGenerator(),
-                //     },
-                //     true
-                //   );
-                // }
-              }
+              onPress={handlePictogramaMessage}
             >
-              <Icon type="material-community" name="image-multiple" size={30} color={colors.white} />
+              <Icon type="material-community" name="image-multiple" size={22} color={colors.white} />
             </TouchableOpacity>
           );
         }}
-        //   <Actions
-        //     {...props}
-        //     containerStyle={{
-        //       position: "absolute",
-        //       right: 50,
-        //       marginBottom:50,
-        //       width:90,
-        //       bottom: 5,
-        //       zIndex: 9999,
-        //     }}
-        //     onPressActionButton={handlePhotoPicker}
-        //     icon={() => (
-        //       <Icon type="material-community" name="image-multiple" size={30} color={colors.iconGray} />
-        //     )}
-        //   />
-        // )}
         timeTextStyle={{ right: { color: colors.iconGray } }}
         renderSend={(props) => {
           const { text, messageIdGenerator, user, onSend } = props;
@@ -391,96 +369,76 @@ export default function Chat() {
         }}
       />
       <Overlay
-                        isVisible={isVisible}
-                        //onBackdropPress={addPost}
-                        windowBackgroundColor="rgba(255, 255, 255, .5)"
-                        overlayBackgroundColor="black"
-                        overlayStyle={styles.overlay}
-                        width="auto"
-                        height="auto"
-                    >
-                        {
-                            busquedaRes ? (
-                                <Image
-                                source={{uri: busquedaRes[0].image}}
-                                style={{
-                                    width: 120,
-                                    height: 160,
-                                    borderWidth: 2,
-                                    borderColor: "black",
-                                    resizeMode: "contain",
-                                    margin: 20,
-                                }}
-                                />
-                            ):(<Text></Text>)
-                        }
-                        <Input
-                            placeholder="Busqueda de un pictograma"
-                            onChange={(e) => onBusqueda(e)}
-                        />
-                        {
-                            busquedaRes ? (
-                                <View style={styles.alternativeLayoutButtonContainer}>
-                                    <Button
-                                    title="Aceptar"
-                                    onPress={confirmarRespuesta}
-                                    buttonStyle={styles.btnAddMensaje}
-                                    />
-                                    <Button
-                                    title="Cancelar"
-                                    onPress={cancelarRespuesta}
-                                    buttonStyle={styles.btnAddMensaje}
-                                    />
-                                </View>
-                            ):(
-                                <Button
-                                title="Buscar"
-                                onPress={buscarPictograma}
-                                buttonStyle={styles.btnAddMensaje}
-                                />
-                            )
-                        }
-                        
-                    </Overlay>
+          isVisible={isVisible}
+          onBackdropPress={addPost}
+          windowBackgroundColor="rgba(255, 255, 255, .5)"
+          overlayBackgroundColor="black"
+          overlayStyle={styles.overlay}
+          width="auto"
+          height="auto"
+      >
+        {
+          busquedaRes ? (
+            <Image
+              source={{uri: busquedaRes[0].image}}
+              style={{
+                width: 120,
+                height: 160,
+                borderWidth: 2,
+                borderColor: "black",
+                resizeMode: "contain",
+                margin: 20,
+              }}
+            />
+          ):(<Text></Text>)
+        }
+        <Input
+            placeholder="Busqueda de un pictograma"
+            onChange={(e) => onBusqueda(e)}
+        />
+        {
+        busquedaRes ? (
+          <View style={styles.alternativeLayoutButtonContainer}>
+            <Button
+              title="Aceptar"
+              onPress={confirmarRespuesta}
+              buttonStyle={styles.btnAddMensaje}
+            />
+            <Button
+              title="Cancelar"
+              type="outline"
+              onPress={cancelarRespuesta}
+              buttonStyle={styles.btnCancelarMensaje}
+            />
+            </View>
+          ):(
+            <View style={styles.alternativeLayoutButtonContainer}>
+              <Button
+                title="Buscar"
+                onPress={buscarPictograma}
+                buttonStyle={styles.btnAddMensaje}
+              />
+              <Button
+                title="Cancelar"
+                type="outline"
+                onPress={cancelarRespuesta}
+                buttonStyle={styles.btnCancelarMensaje}
+              />
+            </View>
+          )
+        }
+      </Overlay>
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  viewContainer: {
-      height: "100%"
-  },
-  viewForm: {
-      marginHorizontal: 10
-  },
   btnAddMensaje: {
       margin: 20,
       backgroundColor: "#4cb4eb"
   },
-  viewImage: {
-      // flexDirection: "row",
-      // marginHorizontal: 20,
-      // marginTop: 30,
-      // width: 400, 
-      // height: 120
-  },
-  viewPhoto: {
-      alignItems: "center",
-      height: 200,
-      marginBottom: 20
-  },
-  textInfo: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      alignSelf: "center"
-  },
-  textOpciones: {
-      color:"#4cb4eb",
-      fontWeight: 'bold',
-      fontSize: 30,
-      lineHeight: 70,
-      marginLeft:15
-      //alignSelf: "center"
+  btnCancelarMensaje: {
+    margin: 20,
   },
   overlay: {
       alignItems: "center",
