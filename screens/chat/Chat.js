@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
+  ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { auth, db } from "../../utils/firebase";
@@ -30,9 +31,10 @@ import {
 } from "react-native-gifted-chat";
 import { pickImage, uploadImage } from "../../utilsContext";
 import ImageView from "react-native-image-viewing";
-import { Icon, Button, Input, Overlay } from "react-native-elements";
+import { Icon, Button, Input, Overlay, Avatar } from "react-native-elements";
 import Loading from '../../components/Loading'
 import axios from 'axios'
+import { map } from 'lodash'
 
 const randomId = nanoid();
 
@@ -40,7 +42,6 @@ export default function Chat() {
   const [isVisible, setIsVisible] = useState(false)
   const [busquedaRes, setBusquedaRes] = useState(null)
   const [inputBusqueda, setInputBusqueda] = useState(null)
-  const [respuestasSelected, setRespuestasSelected] = useState(null)
   const [loading, setLoading] = useState(false)
   const [roomHash, setRoomHash] = useState("");
   const [messages, setMessages] = useState([]);
@@ -144,7 +145,6 @@ export default function Chat() {
   }
 
   const fetchApiBuscarPalabraPicto = async () => {
-    console.log("fetch api por palabra - pictogramas")
     try {
         const res = await axios.get('http://192.168.0.116:3000/api/users/searchFrasePictograma', {params: {mensaje: inputBusqueda}})
         setearPictogramaRespuesta(res.data)
@@ -379,17 +379,24 @@ export default function Chat() {
       >
         {
           busquedaRes ? (
-            <Image
-              source={{uri: busquedaRes[0].image}}
-              style={{
-                width: 120,
-                height: 160,
-                borderWidth: 2,
-                borderColor: "black",
-                resizeMode: "contain",
-                margin: 20,
-              }}
-            />
+            <ScrollView
+                horizontal
+                style={styles.viewImage}
+            >
+            {
+                map(busquedaRes, (imageMensaje, index) => (
+                    <View>
+                        <Avatar
+                        key={index}
+                        style={{width: 100, height: 90, borderWidth: 1,
+                            borderColor: "black", marginLeft:6}}
+                        source={{uri: imageMensaje.image}}
+                    />
+                    <Text style={styles.descripcion}>{imageMensaje.text}</Text>
+                    </View> 
+                ))
+            }
+            </ScrollView>
           ):(<Text></Text>)
         }
         <Input
@@ -433,6 +440,10 @@ export default function Chat() {
 }
 
 const styles = StyleSheet.create({
+  viewImage: {
+    flexDirection: "row",
+    marginTop: 20,
+  },
   btnAddMensaje: {
       margin: 20,
       backgroundColor: "#4cb4eb"
@@ -450,5 +461,11 @@ const styles = StyleSheet.create({
       margin: 20,
       flexDirection: 'row',
       justifyContent: 'space-between'
-    }
+  },
+  descripcion: {
+    fontSize: 15,
+    fontWeight: "bold",
+    marginTop: 20,
+    alignSelf:"center"
+  }
 })
