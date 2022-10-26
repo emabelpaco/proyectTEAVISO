@@ -9,6 +9,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Image,
+  StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { auth, db } from "../../utils/firebase";
@@ -29,10 +30,18 @@ import {
 } from "react-native-gifted-chat";
 import { pickImage, uploadImage } from "../../utilsContext";
 import ImageView from "react-native-image-viewing";
+import { Icon, Button, Input, Overlay } from "react-native-elements";
+import Loading from '../../components/Loading'
+import axios from 'axios'
 
 const randomId = nanoid();
 
 export default function Chat() {
+  const [isVisible, setIsVisible] = useState(false)
+  const [busquedaRes, setBusquedaRes] = useState(null)
+  const [inputBusqueda, setInputBusqueda] = useState(null)
+  const [respuestasSelected, setRespuestasSelected] = useState(null)
+  const [loading, setLoading] = useState(false)
   const [roomHash, setRoomHash] = useState("");
   const [messages, setMessages] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -109,6 +118,62 @@ export default function Chat() {
     return () => unsubscribe();
   }, []);
 
+  const onBusqueda = (e) => {
+    setInputBusqueda(e.nativeEvent.text);
+  }
+
+  async function confirmarRespuesta() {
+    setInputBusqueda(null)
+    setIsVisible(false)
+    for (const element of busquedaRes) {
+      await handlePictogramaPicker(element.image)
+    }
+    setBusquedaRes(null);
+  }
+
+  const cancelarRespuesta = () => {
+    setInputBusqueda(null)
+    setBusquedaRes(null);
+    setIsVisible(false);
+  }
+
+  const buscarPictograma = () => {
+    setLoading(true)
+    // validar input busqueda que no sean mas de dos palabras
+    fetchApiBuscarPalabraPicto()
+  }
+
+  const fetchApiBuscarPalabraPicto = async () => {
+    console.log("fetch api por palabra - pictogramas")
+    try {
+        const res = await axios.get('http://192.168.0.116:3000/api/users/searchFrasePictograma', {params: {mensaje: inputBusqueda}})
+        setearPictogramaRespuesta(res.data)
+    } catch (error){
+        console.log(error)
+    }
+  }
+
+  const setearPictogramaRespuesta = (data) => {
+    const urlImage = "http://hypatia.fdi.ucm.es/conversor/Pictos/"
+    const arrayData = data.data
+    var dataPicto = []
+    var numImage;
+    var textImage;
+    arrayData.forEach(element => {
+        var arrayImages = element.split('[').pop().split(']')[0];
+        var bodyImage = {}
+        numImage = arrayImages.substring(0,4);
+        textImage = element.substring(element.indexOf(']') + 2);
+        bodyImage.image = urlImage + numImage;
+        bodyImage.text = textImage;
+        dataPicto.push(bodyImage)
+    });
+    if (busquedaRes == null) {
+        setBusquedaRes(dataPicto)
+    }  
+    setLoading(false)
+  }
+
   const appendMessages = useCallback(
     (messages) => {
       setMessages((previousMessages) =>
@@ -151,12 +216,21 @@ export default function Chat() {
     }
   }
 
+  async function handlePictogramaPicker(image) {
+    await sendImage(image);
+  }
+
+  async function handlePictogramaMessage() {
+    setIsVisible(true)
+  }
+
   return (
     <ImageBackground
       resizeMode="cover"
       source={require("../../assets/chatbg.png")}
       style={{ flex: 1 }}
     >
+      <Loading isVisible={loading} text="Cargando..."/>
       <GiftedChat
         onSend={onSend}
         messages={messages}
@@ -177,6 +251,55 @@ export default function Chat() {
             )}
           />
         )}
+        renderAccessory={(props) => {
+          const { text, messageIdGenerator, user, onSend } = props;
+          return (
+            <TouchableOpacity
+              style={{
+                height: 40,
+                width: 40,
+                borderRadius: 40,
+                backgroundColor: colors.primary,
+                //width:90,
+                marginLeft:350,
+                //alignItems: "left",
+                justifyContent: "center",
+                marginBottom: 5,
+              }}
+              onPress={
+                handlePictogramaMessage
+                // if (text && onSend) {
+                //   onSend(
+                //     {
+                //       text: text.trim(),
+                //       user,
+                //       _id: messageIdGenerator(),
+                //     },
+                //     true
+                //   );
+                // }
+              }
+            >
+              <Icon type="material-community" name="image-multiple" size={30} color={colors.white} />
+            </TouchableOpacity>
+          );
+        }}
+        //   <Actions
+        //     {...props}
+        //     containerStyle={{
+        //       position: "absolute",
+        //       right: 50,
+        //       marginBottom:50,
+        //       width:90,
+        //       bottom: 5,
+        //       zIndex: 9999,
+        //     }}
+        //     onPressActionButton={handlePhotoPicker}
+        //     icon={() => (
+        //       <Icon type="material-community" name="image-multiple" size={30} color={colors.iconGray} />
+        //     )}
+        //   />
+        // )}
         timeTextStyle={{ right: { color: colors.iconGray } }}
         renderSend={(props) => {
           const { text, messageIdGenerator, user, onSend } = props;
@@ -267,6 +390,107 @@ export default function Chat() {
           );
         }}
       />
+      <Overlay
+                        isVisible={isVisible}
+                        //onBackdropPress={addPost}
+                        windowBackgroundColor="rgba(255, 255, 255, .5)"
+                        overlayBackgroundColor="black"
+                        overlayStyle={styles.overlay}
+                        width="auto"
+                        height="auto"
+                    >
+                        {
+                            busquedaRes ? (
+                                <Image
+                                source={{uri: busquedaRes[0].image}}
+                                style={{
+                                    width: 120,
+                                    height: 160,
+                                    borderWidth: 2,
+                                    borderColor: "black",
+                                    resizeMode: "contain",
+                                    margin: 20,
+                                }}
+                                />
+                            ):(<Text></Text>)
+                        }
+                        <Input
+                            placeholder="Busqueda de un pictograma"
+                            onChange={(e) => onBusqueda(e)}
+                        />
+                        {
+                            busquedaRes ? (
+                                <View style={styles.alternativeLayoutButtonContainer}>
+                                    <Button
+                                    title="Aceptar"
+                                    onPress={confirmarRespuesta}
+                                    buttonStyle={styles.btnAddMensaje}
+                                    />
+                                    <Button
+                                    title="Cancelar"
+                                    onPress={cancelarRespuesta}
+                                    buttonStyle={styles.btnAddMensaje}
+                                    />
+                                </View>
+                            ):(
+                                <Button
+                                title="Buscar"
+                                onPress={buscarPictograma}
+                                buttonStyle={styles.btnAddMensaje}
+                                />
+                            )
+                        }
+                        
+                    </Overlay>
     </ImageBackground>
   );
 }
+
+const styles = StyleSheet.create({
+  viewContainer: {
+      height: "100%"
+  },
+  viewForm: {
+      marginHorizontal: 10
+  },
+  btnAddMensaje: {
+      margin: 20,
+      backgroundColor: "#4cb4eb"
+  },
+  viewImage: {
+      // flexDirection: "row",
+      // marginHorizontal: 20,
+      // marginTop: 30,
+      // width: 400, 
+      // height: 120
+  },
+  viewPhoto: {
+      alignItems: "center",
+      height: 200,
+      marginBottom: 20
+  },
+  textInfo: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      alignSelf: "center"
+  },
+  textOpciones: {
+      color:"#4cb4eb",
+      fontWeight: 'bold',
+      fontSize: 30,
+      lineHeight: 70,
+      marginLeft:15
+      //alignSelf: "center"
+  },
+  overlay: {
+      alignItems: "center",
+      justifyContent: "center",
+      height: 400,
+      width: 300,
+  },
+  alternativeLayoutButtonContainer: {
+      margin: 20,
+      flexDirection: 'row',
+      justifyContent: 'space-between'
+    }
+})

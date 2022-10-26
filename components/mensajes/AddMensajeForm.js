@@ -545,10 +545,6 @@ function FormAdd(formData, setFormData, errorName, errorDescription, errorEmail,
     const [results, setResults] = useState([])
 
     useEffect (() => {
-        
-        console.log("entro al usse efect ==============")
-        //Voice.onSpeechStart = onSpeechStart;
-        //Voice.onSpeechEnd = onSpeechEnd;
         Voice.onSpeechError = onSpeechError;
         Voice.onSpeechResults = onSpeechResults;
 
@@ -556,34 +552,6 @@ function FormAdd(formData, setFormData, errorName, errorDescription, errorEmail,
             Voice.destroy().then(Voice.removeAllListeners)
         }
     }, [])
-
-    // const requestCameraPermission = async () => {
-    //     try {
-    //         const granted = await PermissionsAndroid.request(
-    //             PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-    //             {
-    //               title: "Cool Photo App Audio Permission",
-    //               message:
-    //                 "Cool Photo App needs access to your camera " +
-    //                 "so you can take awesome pictures.",
-    //               buttonNeutral: "Ask Me Later",
-    //               buttonNegative: "Cancel",
-    //               buttonPositive: "OK"
-    //             }
-    //           );
-    //           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-    //             console.log("You can use the camera");
-    //             console.log("entroooo")
-    //         await Voice.start("en-US");
-    //         setStarted(true)
-    //           } else {
-    //             console.log("Camera permission denied");
-    //           }
-    //         } catch (err) {
-    //           console.warn(err);
-    //         }
-            
-    // }
 
     const onChange = (e, type) => {
         formData.setFormData({...formData.formData, [type]: e.nativeEvent.text})
