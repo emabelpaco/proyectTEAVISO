@@ -79,7 +79,8 @@ function Frase({ mensaje, navigation }) {
                     <View>
                         <Avatar
                         key={index}
-                        style={{width: 100, height: 90}}
+                        style={{width: 100, height: 90, borderWidth: 1,
+                            borderColor: "black", marginLeft:6}}
                         source={{uri: imageMensaje.image}}
                     />
                     <Text style={styles.descripcion}>{imageMensaje.text}</Text>

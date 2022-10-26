@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Image, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, Image, TextInput, Button, StyleSheet, Icon } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+//import {  } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 import Context from "../../context/Context"
 import { signIn, signUp } from "../../utils/firebase";
@@ -43,6 +44,7 @@ export default function SignIn() {
           style={{
             borderBottomColor: colors.primary,
             borderBottomWidth: 2,
+            alignSelf:"center",
             width: 250,
           }}
         />
@@ -54,6 +56,7 @@ export default function SignIn() {
           style={{
             borderBottomColor: colors.primary,
             borderBottomWidth: 2,
+            alignSelf:"center",
             width: 250,
             marginTop: 20,
           }}
@@ -66,6 +69,36 @@ export default function SignIn() {
             onPress={handlePress}
           />
         </View>
+        <Button
+                title="Iniciar Sesión con Google"
+                containerStyle={styles.btnContainer}
+                buttonStyle={styles.btnGoogle}
+                onPress={() => console.log("Iniciar con google")}
+                icon={
+                    <Icon
+                        name="google"
+                        type="material-community"
+                        marginRight={10}
+                        size={20}
+                        color="#fff"
+                    />
+                }
+            />
+            <Button
+                title="Iniciar Sesión con Facebook"
+                containerStyle={styles.btnContainer}
+                buttonStyle={styles.btnFacebook}
+                onPress={() => console.log("Iniciar con facebook")}
+                icon={
+                    <Icon
+                        name="facebook"
+                        type="material-community"
+                        marginRight={10}
+                        size={20}
+                        color="#fff"
+                    />
+                }
+            />
         <TouchableOpacity
           style={{ marginTop: 15 }}
         >
@@ -109,5 +142,16 @@ const styles = StyleSheet.create({
     btnRegister: {
         color: "#4cb4eb",
         fontWeight: "bold"
-    }
+    },
+    btnGoogle: {
+      backgroundColor: "#EA4335"
+  },
+  btnFacebook: {
+      //backgroundColor: "#EA4335"
+  },
+  btnContainer: {
+    marginTop: 15,
+    width: "95%",
+    alignSelf: "center"
+},
 })

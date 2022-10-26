@@ -22,6 +22,7 @@ export default function ListMensajes({ mensajes, navigation, handleLoadMore }) {
 function Mensaje({ mensaje, navigation, handleLoadMore }) {
     const imagenCategoria = mensaje.item.imageCategoria
     const primeraFrase = mensaje.item.mensajes[0].nameMensaje
+    const segundaFrase = mensaje.item.mensajes[1].nameMensaje
 
     const goFrases = () => {
         var param = mensaje.item
@@ -44,9 +45,9 @@ function Mensaje({ mensaje, navigation, handleLoadMore }) {
                     <Text style={styles.restaurantInformation}>{primeraFrase}</Text>
                     <Text style={styles.restaurantDescription}>
                         {
-                            size(primeraFrase) > 0
-                                ? `${primeraFrase.substr(0, 20)}...`
-                                : primeraFrase
+                            size(segundaFrase) > 0
+                                ? `${segundaFrase.substr(0, 20)}...`
+                                : segundaFrase
                         }
                     </Text>
                 </View>
@@ -66,8 +67,8 @@ const styles = StyleSheet.create({
     imageRestaurant: {
         width: 120,
         height: 120,
-        borderWidth: 4,
-        borderColor: "#d9d9d9"
+        borderWidth: 1,
+        borderColor: "black"
     },
     restaurantTitle: {
         fontWeight: "bold",
@@ -81,6 +82,6 @@ const styles = StyleSheet.create({
     restaurantDescription: {
         paddingTop: 2,
         color: "grey",
-        width: "75%"
+        width: "90%"
     }
 })

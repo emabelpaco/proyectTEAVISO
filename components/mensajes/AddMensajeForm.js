@@ -1,9 +1,10 @@
 import React, {useEffect, useState } from "react";
-import { StyleSheet, View, ScrollView, Dimensions, FlatList, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, ScrollView, Dimensions, FlatList, Text, TouchableOpacity, PermissionsAndroid } from "react-native";
 import { Button, Input, Image, Overlay } from "react-native-elements";
-import { map, size, isEmpty } from 'lodash';
+import { map, size, isEmpty, result } from 'lodash';
 import { addDocumentWithoutId, getCurrentUser, uploadImage } from "../../utils/actions";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Voice from '@react-native-voice/voice';
 import OptionsMenu from "react-native-option-menu";
 import SelectList from 'react-native-dropdown-select-list'
 import Loading from '../../components/Loading'
@@ -13,10 +14,15 @@ import axios from 'axios'
 const widthScreen = Dimensions.get("window").width
 const MoreIcon = require("../../assets/optionsV.png");
 
-export default function AddMensajeForm() {
+export default function AddMensajeForm(route) {
+    console.log("XXXXDSEEZEEE: ", route.navigation.params.mensajes[0].mensajes[0].imagenes)
+
+    useEffect(() => {
+        setListCategorias()
+    }, [])
 
     const fetchApiBuscarFrasePicto = async () => {
-        console.log("fetch api por frase - pictogramas")
+        console.log("fetch api por frase - pictogramas")//192.168.0.116
         try {
             const res = await axios.get('http://192.168.0.116:3000/api/users/searchFrasePictograma', {params: {mensaje: formData.name}})
             setearPictogramas(res.data)
@@ -34,6 +40,7 @@ export default function AddMensajeForm() {
             console.log(error)
         }
     }
+    
 
     const setearPictogramas = (data) => {
         const urlImage = "http://hypatia.fdi.ucm.es/conversor/Pictos/"
@@ -44,7 +51,7 @@ export default function AddMensajeForm() {
         arrayData.forEach(element => {
             var arrayImages = element.split('[').pop().split(']')[0];
             var bodyImage = {}
-            numImage = arrayImages.substring(0,4);
+            numImage = arrayImages.split(',')[0];
             textImage = element.substring(element.indexOf(']') + 2);
             bodyImage.image = urlImage + numImage;
             bodyImage.text = textImage;
@@ -91,36 +98,60 @@ export default function AddMensajeForm() {
     const [search, setSearch] = useState('')
     const [selected, setSelected] = React.useState("");
     const [categoriaSelect, setCategoriaSelect] = useState('')
-    const [nuevaCategoria, setNuevaCategoria] = useState('')
+    const [nuevaCategoria, setNuevaCategoria] = useState(null)
+    const [dataCategorias, setDataCategorias] = useState(null)
     const [isVisibleNuevaCategoria, setIsVisibleNuevaCategoria] = useState(false)
     const [loading, setLoading] = useState(false)
+    
+    const setListCategorias = async () => {
+        if (dataCategorias === null) {
+            const dataAux = route.navigation.params.conjCategorias
+            const nuevaCatBody = {}
+            nuevaCatBody.key = '1000'
+            nuevaCatBody.value = '"Nueva Categoría"'
+            dataAux.push(nuevaCatBody)
+            setDataCategorias(dataAux)
+        }
+    }
 
-    const data = [
-        {key:'1',value:'Jammu & Kashmir'},
-        {key:'2',value:'Gujrat'},
-        {key:'3',value:'Maharashtra'},
-        {key:'4',value:'Goa'},
-        {key:'1000',value:'Nueva Categoría'},
-      ];
     const addMensaje = async () => {
         if (selected == 1000 && nuevaCategoria == '') {
             console.log("debe ingresar el nombre de la categoria")
         }
         //setLoading(true)
-        // const responseUploadImages = await UploadImages()
-        // const mensaje = {
-        //     name: formData.name,
-        //     images: responseUploadImages,
-        //     createAdd: new Date(),
-        //     createBy: getCurrentUser().uid
-        // }
-        // const responseAddDocument = await addDocumentWithoutId("frases", mensaje)
-        // //setLoading(false)
-
-        // if (!responseAddDocument.statusResponse) {
-        //     toasRef.current.show("Error al crear la frase, intente más tarde", 3000)
-        //     return
-        // }
+        try {
+            console.log("AAAAAAAAA ", route.navigation.params)
+            const categoriasActual = route.navigation.params.mensajes
+            var dataUpdate = {}
+            var dataNuevoMensaje = {}
+            dataNuevoMensaje.idMensaje = "3"
+            dataNuevoMensaje.nameMensaje = formData.name
+            dataNuevoMensaje.imagenes = imagesSelected
+            var idCategoria = 0
+            categoriasActual.forEach(element => {
+                if (element.idCategoria === categoriaSelect){
+                    //dataUpdate = element
+                    element.mensajes.push(dataNuevoMensaje)
+                    return
+                }
+            });
+            console.log("DATA QUE SE VA ENVIAR: ", categoriasActual[1].mensajes)
+            if (categoriaSelect == '1000' && nuevaCategoria != null) {
+                var dataNuevaCategoria = {}
+                dataNuevaCategoria.idCategoria = "3"
+                dataNuevaCategoria.nameCategoria = nuevaCategoria
+                dataNuevaCategoria.mensajes = []
+                dataNuevaCategoria.mensajes.push(dataNuevoMensaje)
+                dataNuevaCategoria.imageCategoria = ""
+                categoriasActual.push(dataNuevaCategoria)
+            }
+            console.log("DATA QUE SE VA ENVIAR PPPPPPP : ", categoriasActual[4].mensajes[0].imagenes)
+            const res = await axios.get('http://192.168.0.116:3000/api/users/saveMessajeInCategoria', {params: {email: "dewey.paco@gmail.com" ,categorias:categoriasActual}})
+            //console.log("post ", res)
+            //setearPictogramas(res.data)
+        } catch (error){
+            console.log(error)
+        }
         setIsVisibleSave(false)
     }
 
@@ -172,6 +203,7 @@ export default function AddMensajeForm() {
         setIsVisibleSave(!isVisibleSave)
     }
     const selectCategoria = (categoria) => {
+        console.log("categoria seleccionada: ", categoria)
         setCategoriaSelect(categoria) // id de la categoria
         if (categoria == 1000) {
             setIsVisibleNuevaCategoria(true)
@@ -328,7 +360,7 @@ export default function AddMensajeForm() {
                         <SelectList 
                             onSelect={() => selectCategoria(selected)}
                             setSelected={setSelected} 
-                            data={data}  
+                            data={dataCategorias}  
                             search={false} 
                             boxStyles={{borderRadius:0}}
                             placeholder={"Opción"}
@@ -337,7 +369,7 @@ export default function AddMensajeForm() {
                             <View>
                                 <Input
                                     style={{ marginTop: 30}}
-                                    placeholder="Nueva categoría"
+                                    placeholder="Ingrese nombre de categoría"
                                     onChange={(e) => onNuevaCategoria(e)}
                                 />
                             </View>
@@ -509,9 +541,73 @@ function FormAdd(formData, setFormData, errorName, errorDescription, errorEmail,
     const [country, setCountry] = useState("AR")
     const [callingCode, setCallingCode] = useState("59")
     const [phone, setPhone] = useState("")
+    const [started, setStarted] = useState(false)
+    const [results, setResults] = useState([])
+
+    useEffect (() => {
+        
+        console.log("entro al usse efect ==============")
+        //Voice.onSpeechStart = onSpeechStart;
+        //Voice.onSpeechEnd = onSpeechEnd;
+        Voice.onSpeechError = onSpeechError;
+        Voice.onSpeechResults = onSpeechResults;
+
+        return () => {
+            Voice.destroy().then(Voice.removeAllListeners)
+        }
+    }, [])
+
+    // const requestCameraPermission = async () => {
+    //     try {
+    //         const granted = await PermissionsAndroid.request(
+    //             PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+    //             {
+    //               title: "Cool Photo App Audio Permission",
+    //               message:
+    //                 "Cool Photo App needs access to your camera " +
+    //                 "so you can take awesome pictures.",
+    //               buttonNeutral: "Ask Me Later",
+    //               buttonNegative: "Cancel",
+    //               buttonPositive: "OK"
+    //             }
+    //           );
+    //           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    //             console.log("You can use the camera");
+    //             console.log("entroooo")
+    //         await Voice.start("en-US");
+    //         setStarted(true)
+    //           } else {
+    //             console.log("Camera permission denied");
+    //           }
+    //         } catch (err) {
+    //           console.warn(err);
+    //         }
+            
+    // }
 
     const onChange = (e, type) => {
         formData.setFormData({...formData.formData, [type]: e.nativeEvent.text})
+    }
+
+    const onSpeechResults = (result) => {
+        console.log("result ", result)
+        console.log("formData ", formData.formData.name)
+        formData.formData.name = result.value[0]
+        setResults(result.value)
+    }
+
+    const onSpeechError = (error) => {
+        console.log("Hubo un error: ", error)
+    }
+
+    const startSpeechToText = async () => {
+        await Voice.start("es-AR");
+        setStarted(true)
+    }
+
+    const stopSpeechToText = async () => {
+        await Voice.stop();
+        setStarted(false)
     }
 
     return (
@@ -523,6 +619,8 @@ function FormAdd(formData, setFormData, errorName, errorDescription, errorEmail,
                 onChange={(e) => onChange(e, "name")}
                 errorMessage={formData.errorName}
             />
+            {!started ? <Button title='Start VOZ' onPress={startSpeechToText}/> : undefined }
+            {started ? <Button title='Stop VOZ' onPress={stopSpeechToText}/> : undefined }
         </View>
     )
 }

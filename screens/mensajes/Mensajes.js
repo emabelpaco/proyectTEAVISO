@@ -14,6 +14,7 @@ export default function Mensaje() {
     const [startMensaje, setStartMensaje] = useState(null)
     const [mensajes, setMensajes] = useState([])
     const [loading, setLoading] = useState(false)
+    const [conjCategorias, setConjCategorias] = useState([])
 
     const limitMensajes = 7
     console.log("MENSAJES ", mensajes)
@@ -29,13 +30,37 @@ export default function Mensaje() {
         console.log("fetch api categorias")
         try {
             const res = await axios.get('http://192.168.0.116:3000/api/users/getCategoriasByEmail', {params: {email: "dewey.paco@gmail.com"}})
-            console.log(res.data.data.docs[0].categorias)
+            console.log("CAtegorias::: ", res.data.data.docs[0].categorias)
             setMensajes(res.data.data.docs[0].categorias)
+            //setConjuntoCategorias(mensajes)
+            const data = res.data.data.docs[0].categorias
+            var arrayCateg = []
+            data.forEach(element => {
+                var body = {}
+                body.key = element.idCategoria
+                body.value = element.nameCategoria
+                arrayCateg.push(body)
+            });
+            setConjCategorias(arrayCateg)
+            console.log("DDDDDD ", conjCategorias)
+        
         } catch (error){
             console.log(error)
         }
     }
 
+    const setConjuntoCategorias = async (d) => {
+        console.log("DDDDDD ", d)
+        const data = d
+        var arrayCateg = []
+        data.forEach(element => {
+            var body = {}
+            body.id = element.idCategoria
+            body.categoria = element.nameCategoria
+            arrayCateg.push(body)
+        });
+        setConjCategorias(arrayCateg)
+    }
     // useFocusEffect(
     //     useCallback(() => {
     //         async function getData(){
@@ -97,7 +122,7 @@ export default function Mensaje() {
                         color="#4cb4eb"
                         reverse
                         containerStyle={styles.btnContainer}
-                        onPress={() => navigation.navigate("addmensaje")}
+                        onPress={() => navigation.navigate("addmensaje", { conjCategorias, mensajes })}
                     />
                 )
                 

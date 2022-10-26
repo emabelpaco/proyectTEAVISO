@@ -23,7 +23,7 @@ export default function Register() {
                     resizeMode="contain"
                     style={styles.image}
                 />
-                <Text style={{ fontSize: 22, color: "#075e54", marginTop: 10, textAlign: "center" }}>
+                <Text style={{ fontSize: 22, color: "#4cb4eb", marginTop: 10, textAlign: "center" }}>
                     Registrar Usuario
                 </Text>
                 <KeyboardAwareScrollView>

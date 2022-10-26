@@ -5,7 +5,8 @@ import Toast from "react-native-easy-toast";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Loading from "../../components/Loading";
 
-export default function AddMensaje({ navigation }) {
+export default function AddMensaje({ route , mensajes}) {
+    console.log("ADDMensaje estoy aquiu: ", route.params.mensajes)
     const toastRef = useRef()
     const [loading, setLoading] = useState(false)
 
@@ -14,7 +15,7 @@ export default function AddMensaje({ navigation }) {
             <AddMensajeForm
                 toastRef={toastRef}
                 setLoading={setLoading}
-                navigation={navigation}
+                navigation={route}
             />
             <Loading
                 isVisible={loading}

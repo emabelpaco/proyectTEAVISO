@@ -97,12 +97,20 @@ export default function  Navigation (){
         </Stack.Navigator>
       ) : (
         <Tab.Navigator
-            initialRouteName='cuenta'
-            tabBarOptions={{
-                inactiveTintColor: "#866e74",
-                activeTintColor: "#4cb4eb"
-            }}
+            initialRouteName='mensaje'
+            // tabBarOptions={{
+            //     inactiveTintColor: "#866e74",
+            //     activeTintColor: "#4cb4eb"
+            // }}
             screenOptions={({ route }) => ({
+                tabBarActiveTintColor: "#4cb4eb",
+                tabBarInactiveTintColor: "#866e74",
+                tabBarStyle: [
+                    {
+                        "display": "flex"
+                    },
+                    null
+                ],
                 headerShown: false,
                 tabBarIcon: ({color}) => screenOptions(route, color)
             })}
