@@ -1,8 +1,8 @@
 import React, {useEffect, useState } from "react";
-import { StyleSheet, View, ScrollView, Dimensions, FlatList, Text, TouchableOpacity, PermissionsAndroid } from "react-native";
-import { Button, Input, Image, Overlay } from "react-native-elements";
-import { map, size, isEmpty, result } from 'lodash';
-import { addDocumentWithoutId, getCurrentUser, uploadImage } from "../../utils/actions";
+import { StyleSheet, View, ScrollView, Dimensions, FlatList, Text, TouchableOpacity } from "react-native";
+import { Button, Input, Image, Overlay, Icon } from "react-native-elements";
+import { map, size, isEmpty } from 'lodash';
+import { uploadImage } from "../../utils/actions";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Voice from '@react-native-voice/voice';
 import OptionsMenu from "react-native-option-menu";
@@ -15,7 +15,6 @@ const widthScreen = Dimensions.get("window").width
 const MoreIcon = require("../../assets/optionsV.png");
 
 export default function AddMensajeForm(route) {
-    console.log("XXXXDSEEZEEE: ", route.navigation.params.mensajes[0].mensajes[0].imagenes)
 
     useEffect(() => {
         setListCategorias()
@@ -120,7 +119,6 @@ export default function AddMensajeForm(route) {
         }
         //setLoading(true)
         try {
-            console.log("AAAAAAAAA ", route.navigation.params)
             const categoriasActual = route.navigation.params.mensajes
             var dataUpdate = {}
             var dataNuevoMensaje = {}
@@ -135,7 +133,6 @@ export default function AddMensajeForm(route) {
                     return
                 }
             });
-            console.log("DATA QUE SE VA ENVIAR: ", categoriasActual[1].mensajes)
             if (categoriaSelect == '1000' && nuevaCategoria != null) {
                 var dataNuevaCategoria = {}
                 dataNuevaCategoria.idCategoria = "3"
@@ -145,10 +142,8 @@ export default function AddMensajeForm(route) {
                 dataNuevaCategoria.imageCategoria = ""
                 categoriasActual.push(dataNuevaCategoria)
             }
-            console.log("DATA QUE SE VA ENVIAR PPPPPPP : ", categoriasActual[4].mensajes[0].imagenes)
             const res = await axios.get('http://192.168.0.116:3000/api/users/saveMessajeInCategoria', {params: {email: "dewey.paco@gmail.com" ,categorias:categoriasActual}})
-            //console.log("post ", res)
-            //setearPictogramas(res.data)
+            
         } catch (error){
             console.log(error)
         }
@@ -162,22 +157,10 @@ export default function AddMensajeForm(route) {
     const crearMensaje = async () => {
         setLoading(true)
         if(!validForm()) {
+            setLoading(false)
             return
         }
         fetchApiBuscarFrasePicto()
-    }
-
-    const UploadImages = async () => {
-        const imagesUrl = []
-        await Promise.all(
-            map(imagesSelected, async(image) => {
-                const response = await uploadImage(image, "frases", uuid())
-                if(response.statusResponse) {
-                    imagesUrl.push(response.url)
-                }
-            })
-        )
-        return imagesUrl
     }
 
     const validForm = () => {
@@ -421,14 +404,6 @@ function ImageMensaje({imageMensaje}) {
 }
 
 function UploadImagePicto(imagesSelected, setImagesSelected) {
-    // console.log("imagenessss: ", imagesSelected)
-    // const widths = Dimensions.get("window").width
-    // const heightScreen = Dimensions.get("window").height
-    // const isLandscape = widths > heightScreen;
-    // console.log("hei: ", heightScreen)
-    // console.log("widths: ", widths)
-    // console.log("isLandscape: ", isLandscape)
-
     return (
         <ScrollView
             style={styles.viewImage}
@@ -538,11 +513,7 @@ function UploadRespuestasImagePicto(respuestasSelected, setRespuestasSelected) {
 }
 
 function FormAdd(formData, setFormData, errorName, errorDescription, errorEmail, errorAddress, errorPhone) {
-    const [country, setCountry] = useState("AR")
-    const [callingCode, setCallingCode] = useState("59")
-    const [phone, setPhone] = useState("")
     const [started, setStarted] = useState(false)
-    const [results, setResults] = useState([])
 
     useEffect (() => {
         Voice.onSpeechError = onSpeechError;
@@ -558,8 +529,6 @@ function FormAdd(formData, setFormData, errorName, errorDescription, errorEmail,
     }
 
     const onSpeechResults = (result) => {
-        console.log("result ", result)
-        console.log("formData ", formData.formData.name)
         formData.formData.name = result.value[0]
         setResults(result.value)
     }
@@ -587,8 +556,29 @@ function FormAdd(formData, setFormData, errorName, errorDescription, errorEmail,
                 onChange={(e) => onChange(e, "name")}
                 errorMessage={formData.errorName}
             />
-            {!started ? <Button title='Start VOZ' onPress={startSpeechToText}/> : undefined }
-            {started ? <Button title='Stop VOZ' onPress={stopSpeechToText}/> : undefined }
+            {!started ? 
+                <Icon
+                    type="material-community"
+                    name="microphone"
+                    color="#4cb4eb"
+                    reverse
+                    containerStyle={styles.btnContainer}
+                    onPress={startSpeechToText}
+                />
+                : undefined 
+            } 
+            {started ? 
+                <Icon
+                    type="material-community"
+                    name="stop"
+                    color="#ed6379"
+                    reverse
+                    containerStyle={styles.btnContainer}
+                    onPress={stopSpeechToText}
+                /> 
+                : undefined 
+            }
+            
         </View>
     )
 }
@@ -645,5 +635,16 @@ const styles = StyleSheet.create({
         margin: 20,
         flexDirection: 'row',
         justifyContent: 'space-between'
-      }
+    },
+    btnContainer: {
+        position: "absolute",
+        bottom: 30,
+        right: 30,
+        shadowColor: "black",
+        shadowOffset: {
+            width: 2,
+            height: 2
+        },
+        shadowOpacity: 0.5
+    }
 })

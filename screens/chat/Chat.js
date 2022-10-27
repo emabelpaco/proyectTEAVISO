@@ -39,6 +39,7 @@ import { map } from 'lodash'
 const randomId = nanoid();
 
 export default function Chat() {
+  const [started, setStarted] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const [busquedaRes, setBusquedaRes] = useState(null)
   const [inputBusqueda, setInputBusqueda] = useState(null)
@@ -229,6 +230,16 @@ export default function Chat() {
     setBusquedaRes(null);
   }
 
+  const startSpeechToText = async () => {
+    await Voice.start("es-AR");
+    setStarted(true)
+  }
+
+  const stopSpeechToText = async () => {
+    await Voice.stop();
+    setStarted(false)
+  }
+
   return (
     <ImageBackground
       resizeMode="cover"
@@ -403,6 +414,28 @@ export default function Chat() {
             placeholder="Busqueda de un pictograma"
             onChange={(e) => onBusqueda(e)}
         />
+        {!started ? 
+          <Icon
+              type="material-community"
+              name="microphone"
+              color="#4cb4eb"
+              reverse
+              containerStyle={styles.btnContainer}
+              onPress={startSpeechToText}
+          />
+          : undefined 
+        } 
+        {started ? 
+          <Icon
+              type="material-community"
+              name="stop"
+              color="#ed6379"
+              reverse
+              containerStyle={styles.btnContainer}
+              onPress={stopSpeechToText}
+          /> 
+          : undefined 
+        }
         {
         busquedaRes ? (
           <View style={styles.alternativeLayoutButtonContainer}>
@@ -467,5 +500,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 20,
     alignSelf:"center"
+  },
+  btnContainer: {
+    //position: "absolute",
+    //bottom: 30,
+    //right: 30,
+    shadowColor: "black",
+    shadowOffset: {
+        width: 2,
+        height: 2
+    },
+    shadowOpacity: 0.5
   }
 })
