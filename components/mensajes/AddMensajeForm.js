@@ -316,16 +316,25 @@ export default function AddMensajeForm(route) {
                                     />
                                     <Button
                                     title="Cancelar"
+                                    type="outline"
                                     onPress={cancelarRespuesta}
-                                    buttonStyle={styles.btnAddMensaje}
+                                    buttonStyle={styles.btnCancelarMensaje}
                                     />
                                 </View>
                             ):(
-                                <Button
-                                title="Buscar"
-                                onPress={buscarPictograma}
-                                buttonStyle={styles.btnAddMensaje}
-                                />
+                                <View style={styles.alternativeLayoutButtonContainer}>
+                                    <Button
+                                    title="Buscar"
+                                    onPress={buscarPictograma}
+                                    buttonStyle={styles.btnAddMensaje}
+                                    />
+                                    <Button
+                                    title="Cancelar"
+                                    type="outline"
+                                    onPress={cancelarRespuesta}
+                                    buttonStyle={styles.btnCancelarMensaje}
+                                    />
+                                </View>
                             )
                         }
                         
@@ -529,8 +538,9 @@ function FormAdd(formData, setFormData, errorName, errorDescription, errorEmail,
     }
 
     const onSpeechResults = (result) => {
-        formData.formData.name = result.value[0]
-        setResults(result.value)
+        if (result != undefined) {
+            formData.setFormData({...formData.formData, ["name"]: result.value[0]})
+        }
     }
 
     const onSpeechError = (error) => {
@@ -646,5 +656,8 @@ const styles = StyleSheet.create({
             height: 2
         },
         shadowOpacity: 0.5
+    },
+    btnCancelarMensaje: {
+        margin: 20,
     }
 })

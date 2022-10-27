@@ -33,6 +33,7 @@ import { pickImage, uploadImage } from "../../utilsContext";
 import ImageView from "react-native-image-viewing";
 import { Icon, Button, Input, Overlay, Avatar } from "react-native-elements";
 import Loading from '../../components/Loading'
+import Voice from '@react-native-voice/voice';
 import axios from 'axios'
 import { map } from 'lodash'
 
@@ -119,6 +120,15 @@ export default function Chat() {
     });
     return () => unsubscribe();
   }, []);
+
+  useEffect (() => {
+    Voice.onSpeechError = onSpeechError;
+    Voice.onSpeechResults = onSpeechResults;
+
+    return () => {
+        Voice.destroy().then(Voice.removeAllListeners)
+    }
+  }, [])
 
   const onBusqueda = (e) => {
     setInputBusqueda(e.nativeEvent.text);
@@ -228,6 +238,17 @@ export default function Chat() {
   const addPost = () => {
     setIsVisible(!isVisible)
     setBusquedaRes(null);
+  }
+
+  const onSpeechResults = (result) => {
+    console.log("result ", result)
+    if (result != undefined) {
+      setInputBusqueda(result.value[0])
+    }
+  }
+
+  const onSpeechError = (error) => {
+    console.log("Hubo un error: ", error)
   }
 
   const startSpeechToText = async () => {
@@ -411,7 +432,8 @@ export default function Chat() {
           ):(<Text></Text>)
         }
         <Input
-            placeholder="Busqueda de un pictograma"
+            placeholder="Escriba el mensaje"
+            defaultValue={inputBusqueda}
             onChange={(e) => onBusqueda(e)}
         />
         {!started ? 
