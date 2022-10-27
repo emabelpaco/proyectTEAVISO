@@ -42,10 +42,16 @@ function Mensaje({ mensaje, navigation, handleLoadMore }) {
                 </View>
                 <View>
                     <Text style={styles.restaurantTitle}>{mensaje.item.nameCategoria}</Text>
-                    <Text style={styles.restaurantInformation}>{primeraFrase}</Text>
+                    <Text style={styles.restaurantInformation}>
+                        {
+                            size(primeraFrase) > 20
+                                ? `${primeraFrase.substr(0, 20)}...`
+                                : primeraFrase
+                        }
+                    </Text>
                     <Text style={styles.restaurantDescription}>
                         {
-                            size(segundaFrase) > 0
+                            size(segundaFrase) > 20
                                 ? `${segundaFrase.substr(0, 20)}...`
                                 : segundaFrase
                         }
@@ -65,10 +71,10 @@ const styles = StyleSheet.create({
         marginRight: 15
     },
     imageRestaurant: {
-        width: 120,
-        height: 120,
-        borderWidth: 1,
-        borderColor: "black"
+        width: 150,
+        height: 150,
+        borderWidth: 4,
+        borderColor: "#d9d9d9"
     },
     restaurantTitle: {
         fontWeight: "bold",
