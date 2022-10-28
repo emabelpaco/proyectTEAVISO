@@ -38,7 +38,7 @@ export default function Chats() {
   }
 
   return (
-    <View style={{ flex: 1, padding: 5, paddingRight: 10 }}>
+    <View style={{ flex: 1, padding: 5, paddingRight: 10, backgroundColor: "#d6eefb" }}>
       {rooms.map((room) => (
         <ListItem
           type="chat"
