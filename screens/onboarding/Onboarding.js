@@ -1,83 +1,102 @@
-import React from "react";
-import { StyleSheet, Text, View, Image, Button } from "react-native";
+import { React, useState } from "react";
+import { StyleSheet, View, Image, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Onboarding from "react-native-onboarding-swiper";
-import { signIn } from "../../utils/firebase";
-import { loginWithEmailAndPassword } from "../../utils/actions"; 
-import * as app from "../../config";
-
-const backgroundColor = isLight => (isLight ? 'blue' : 'lightblue');
-const color = isLight => backgroundColor(!isLight);
-
-const skip = () => (
-    <Button
-        title='Salir'
-        //color='#00000'
-        //onPress={() => navigation.navigate("register")}
-    />
-)
-
-const next = ({ isLight, ...props }) => (
-    <Button
-        title='Siguiente'
-        //color='#00000'
-        buttonStyle={{
-            backgroundColor: backgroundColor(isLight),
-          }}
-          containerViewStyle={{
-            marginVertical: 10,
-            width: 70,
-            backgroundColor: backgroundColor(isLight),
-          }}
-          textStyle={{ color: color(isLight) }}
-          {...props}
-    />
-)
+import { registerUser } from "../../utils/actions"; 
+import { auth, db } from "../../utils/firebase";
+import { uploadImage } from "../../utilsContext";
+import Loading from "../../components/Loading";
 
 export default function OnboardingScreen(props) {
-    console.log("ooonn", props);
-    const navigation = useNavigation()
+    const [loading, setLoading] = useState(false)
     
-    async function handlePress () {
-        app.primeraVez = false;
-        if (!app.primeraVez) {
-
-        }
+    async function salirPress () {
+        doRegisterUser()
     }
+
+    const doRegisterUser = async () => {
+        setLoading(true)
+        const result = await registerUser(props.route.params.formData.email, props.route.params.formData.password)
+        setLoading(false)
+    
+        if (!result.statusResponse) {
+            console.log("Error al crear cuenta: ",result.error)
+            return
+        }
+        handlePress();
+    }
+    
+    async function handlePress() {
+        const user = auth.currentUser;
+        let photoURL;
+        if (props.route.params.formData.imagenPerfil) {
+          const { url } = await uploadImage(
+            props.route.params.formData.imagenPerfil,
+            `images/${user.uid}`,
+            "profilePicture"
+          );
+          photoURL = url;
+        }
+        const userData = {
+          displayName: props.route.params.formData.nombre,
+          email: user.email,
+        };
+        if (photoURL) {
+          userData.photoURL = photoURL;
+        }
+    
+        await Promise.all([
+          updateProfile(user, userData),
+          setDoc(doc(db, "users", user.uid), { ...userData, uid: user.uid }),
+        ]);
+    }
+
     return (
+        <View style={styles.viewBody}>
         <Onboarding
-            //SkipButtonComponent={skip}
-            //NextButtonComponent={next}
-            //DoneButtonComponent={Done}
-            onSkip={() => handlePress()}
-            onDone={() => handlePress()}
+            onSkip={() => salirPress()}
+            onDone={() => salirPress()}
             skipLabel="Salir"
             nextLabel="Siguiente"
-            don
-            titleStyles={{ color: 'black', fontSize: 35 }}
+            titleStyles={{ color: '#4cb4eb', fontSize: 40 }}
             pages={[
                 {
-                    backgroundColor: '#a6e4d0',
+                    backgroundColor: '#bfe4f9',
                     image: <Image source={require('../../assets/logo.png')} />,
                     title: 'Mensajes Personalizados',
-                    subtitle: 'Done with React Native Onboarding Swiper',
+                    titleStyles:{ color: '#4cb4eb', fontWeight: 'bold' },
+                    subtitle: 'Desde aquí podrás generar tus mensajes personalizados y podrás utilizarlos en cualquier momento.',
+                    subTitleStyles:{ color: '#4cb4eb'}
                 },
                 {
-                    backgroundColor: '#a6e4d0',
+                    backgroundColor: '#bfe4f9',
                     image: <Image source={require('../../assets/logo.png')} />,
                     title: 'Organización por categorías',
-                    subtitle: 'Done with React Native Onboarding Swiper',
+                    titleStyles:{ color: '#4cb4eb', fontWeight: 'bold' },
+                    subtitle: 'Podrás crear categorías donde podrás guardar los mensajes que quieras volver a utilizar.',
+                    subTitleStyles:{ color: '#4cb4eb' }
                 },
                 {
-                    backgroundColor: '#a6e4d0',
+                    backgroundColor: '#bfe4f9',
                     image: <Image source={require('../../assets/logo.png')} />,
                     title: 'Chat entre usuarios',
-                    subtitle: 'Done with React Native Onboarding Swiper',
-                    subTitleStyles:{ color: 'red' }
+                    titleStyles:{ color: '#4cb4eb', fontWeight: 'bold' },
+                    subtitle: 'Podrás interactuar con otros usuarios mediante un chat en donde podrás utilizar los mensajes creados.',
+                    subTitleStyles:{ color: '#4cb4eb'}
                 },
               ]}
         />
+        <Loading
+                isVisible={loading}
+                text="Cargando"
+        />
+        </View>
     )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    viewBody: {
+        flex: 1,
+        height: "100%"
+    },
+})

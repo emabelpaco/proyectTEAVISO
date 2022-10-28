@@ -4,14 +4,8 @@ import { StyleSheet, View, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Icon, Input } from "react-native-elements";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { updateProfile } from "@firebase/auth";
-import { doc, setDoc } from "@firebase/firestore";
 import { validateEmail, loadImageFromGalery } from "../../utils/helpers";
-import { registerUser } from "../../utils/actions"; 
-import { auth, db } from "../../utils/firebase";
-import { uploadImage } from "../../utilsContext";
 import Loading from "../Loading";
-import * as app from "../../config";
 
 export default function RegisterForm() {
 
@@ -31,46 +25,13 @@ export default function RegisterForm() {
     }
 
     const doRegisterUser = async () => {
-        app.primeraVez = true;
-        console.log("app.primeraVez", app.primeraVez)
         if(!validateData()){
             return;
-        }
-        setLoading(true)
-        const result = await registerUser(formData.email, formData.password)
-        setLoading(false)
-
-        if (!result.statusResponse) {
-            setErrorEmail(result.error)
-            return
         }
         handlePress();
     }
 
     async function handlePress() {
-        const user = auth.currentUser;
-        let photoURL;
-        if (selectedImage) {
-          const { url } = await uploadImage(
-            selectedImage,
-            `images/${user.uid}`,
-            "profilePicture"
-          );
-          photoURL = url;
-        }
-        const userData = {
-          displayName: formData.nombre,
-          email: user.email,
-        };
-        if (photoURL) {
-          userData.photoURL = photoURL;
-        }
-    
-        await Promise.all([
-          updateProfile(user, userData),
-          setDoc(doc(db, "users", user.uid), { ...userData, uid: user.uid }),
-        ]);
-     
         navigation.navigate("onboarding", {formData});
     }
 
@@ -112,6 +73,7 @@ export default function RegisterForm() {
             console.log("result: ", result)
         }
         setSelectedImage(result.image);
+        setFormData({...formData, ["imagenPerfil"]: result.image})
       }
 
     return (
@@ -202,7 +164,7 @@ export default function RegisterForm() {
 }
 
 const defaultFormValues = () => {
-    return { email : '', password :'', confirm : '' }
+    return { email : '', password :'', confirm : '', imagenPerfil: '' }
 }
 
 const styles = StyleSheet.create({

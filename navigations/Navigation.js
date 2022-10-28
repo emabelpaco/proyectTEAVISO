@@ -79,7 +79,7 @@ export default function  Navigation (){
 
     return (
       <NavigationContainer>
-        {!currUser && !app.primeraVez? (
+        {!currUser ? (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen 
                 name="signIn" 

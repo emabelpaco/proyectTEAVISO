@@ -11,7 +11,7 @@ export default function Register() {
             <StatusBar style="auto" />
             <View
                 style={{
-                backgroundColor: "#d6eefb",
+                backgroundColor: "#bfe4f9",
                 flex: 1,
                 paddingTop: Constants.statusBarHeight + 20,
                 padding: 20,
