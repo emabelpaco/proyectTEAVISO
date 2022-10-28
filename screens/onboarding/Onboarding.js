@@ -62,7 +62,7 @@ export default function OnboardingScreen(props) {
             pages={[
                 {
                     backgroundColor: '#bfe4f9',
-                    image: <Image source={require('../../assets/logo.png')} />,
+                    image: <Image source={require('../../assets/Onboarding1.png')} />,
                     title: 'Mensajes Personalizados',
                     titleStyles:{ color: '#4cb4eb', fontWeight: 'bold' },
                     subtitle: 'Desde aquí podrás generar tus mensajes personalizados y podrás utilizarlos en cualquier momento.',
@@ -70,7 +70,7 @@ export default function OnboardingScreen(props) {
                 },
                 {
                     backgroundColor: '#bfe4f9',
-                    image: <Image source={require('../../assets/logo.png')} />,
+                    image: <Image source={require('../../assets/Onboarding2.png')} />,
                     title: 'Organización por categorías',
                     titleStyles:{ color: '#4cb4eb', fontWeight: 'bold' },
                     subtitle: 'Podrás crear categorías donde podrás guardar los mensajes que quieras volver a utilizar.',
@@ -78,7 +78,7 @@ export default function OnboardingScreen(props) {
                 },
                 {
                     backgroundColor: '#bfe4f9',
-                    image: <Image source={require('../../assets/logo.png')} />,
+                    image: <Image source={require('../../assets/Onboarding3.png')} />,
                     title: 'Chat entre usuarios',
                     titleStyles:{ color: '#4cb4eb', fontWeight: 'bold' },
                     subtitle: 'Podrás interactuar con otros usuarios mediante un chat en donde podrás utilizar los mensajes creados.',
