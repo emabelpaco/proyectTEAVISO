@@ -11,8 +11,7 @@ export default function Register() {
             <StatusBar style="auto" />
             <View
                 style={{
-                //alignItems: "center",
-                //justifyContent: "center",
+                backgroundColor: "#d6eefb",
                 flex: 1,
                 paddingTop: Constants.statusBarHeight + 20,
                 padding: 20,

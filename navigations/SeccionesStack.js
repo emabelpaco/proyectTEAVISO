@@ -9,7 +9,7 @@ export default function SeccioneStack() {
         <Stack.Navigator
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: "#1684D4",
+                    backgroundColor: "#4cb4eb",
                 },
                 headerTintColor: "white",
                 headerBackTitle: "Back",

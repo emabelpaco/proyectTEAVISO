@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
     imageRestaurant: {
         width: 120,
         height: 120,
-        borderWidth: 4,
-        borderColor: "#d9d9d9"
+        borderWidth: 2,
+        borderColor: "black"
     },
     restaurantTitle: {
         fontWeight: "bold",

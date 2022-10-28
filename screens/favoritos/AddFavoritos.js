@@ -9,19 +9,26 @@ export default function AddFavoritos({ navigation }) {
     const toastRef = useRef()
     const [loading, setLoading] = useState(false)
     return (
-        <KeyboardAwareScrollView>
-            <AddFavoritoForm
-                toastRef={toastRef}
-                setLoading={setLoading}
-                navigation={navigation}
-            />
-            <Loading
-                isVisible={loading}
-                text="Creando pictograma..."
-            />
-            <Toast ref={toastRef} position="center" opacity={0.9}/>
-        </KeyboardAwareScrollView>
+        <View style={styles.viewBody}>
+            <KeyboardAwareScrollView>
+                <AddFavoritoForm
+                    toastRef={toastRef}
+                    setLoading={setLoading}
+                    navigation={navigation}
+                />
+                <Loading
+                    isVisible={loading}
+                    text="Creando pictograma..."
+                />
+                <Toast ref={toastRef} position="center" opacity={0.9}/>
+            </KeyboardAwareScrollView>
+        </View>
     )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    viewBody: {
+        flex: 1,
+        backgroundColor: "#d6eefb"
+    },
+})

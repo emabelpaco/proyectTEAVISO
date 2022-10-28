@@ -11,7 +11,7 @@ export default function MensajeStack() {
         <Stack.Navigator
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: "#1684D4", //"#32a4e3", "#66c1f2", "#48a6be"
+                    backgroundColor: "#4cb4eb", //"#32a4e3", "#66c1f2", "#48a6be"
                 },
                 headerTintColor: "white",
                 headerBackTitle: "Back",

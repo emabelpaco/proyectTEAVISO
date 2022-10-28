@@ -601,7 +601,8 @@ const defaultFormValue = () => {
 
 const styles = StyleSheet.create({
     viewContainer: {
-        height: "100%"
+        height: "100%",
+        backgroundColor: "#d6eefb"
     },
     viewForm: {
         marginHorizontal: 10
@@ -640,6 +641,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         height: 400,
         width: 300,
+        backgroundColor: "#d6eefb"
     },
     alternativeLayoutButtonContainer: {
         margin: 20,

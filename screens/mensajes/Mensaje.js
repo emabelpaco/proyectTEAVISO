@@ -39,7 +39,7 @@ export default function Mensaje({ navigation, route }) {
     }
 
     return (
-        <View>
+        <View style={styles.viewBody}>
             <FlatList
                 data={imagenesFrase}
                 keyExtractor={(item, index) => index.toString()}
@@ -93,6 +93,10 @@ function Frase({ mensaje, navigation }) {
 }
 
 const styles = StyleSheet.create({
+    viewBody: {
+        flex: 1,
+        backgroundColor: "#d6eefb"
+    },
     viewImage: {
         flexDirection: "row",
         marginHorizontal: 20,

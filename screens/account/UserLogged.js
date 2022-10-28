@@ -42,9 +42,8 @@ export default function UserLogged() {
                     
             }
             <Button
-                title="Cerra Sesión"
+                title="Cerrar Sesión"
                 buttonStyle={styles.btnCloseSesion}
-                titleStyle={styles.btnCloseSesionText}
                 onPress={() => {
                     closeSesion()
                     navigation.navigate("mensaje")
@@ -59,12 +58,12 @@ export default function UserLogged() {
 const styles = StyleSheet.create({
     container: {
         minHeight: "100%",
-        backgroundColor: "#f9f9f9"
+        backgroundColor: "#d6eefb"
     },
     btnCloseSesion: {
         marginTop: 30,
         borderRadius: 5,
-        backgroundColor:"#FFFFFF",
+        backgroundColor:"#4cb4eb",
         borderTopWidth: 1,
         borderTopColor: "#4cb4eb",
         borderBottomWidth: 1,

@@ -105,7 +105,8 @@ export default function Favoritos() {
 
 const styles = StyleSheet.create({
     viewBody: {
-        flex: 1
+        flex: 1,
+        backgroundColor: "#d6eefb"
     },
     btnContainer: {
         position: "absolute",

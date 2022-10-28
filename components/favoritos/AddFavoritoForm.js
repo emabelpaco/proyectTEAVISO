@@ -71,26 +71,28 @@ export default function AddFavoritoForm({toastRef, setLoading, navigation}) {
     }
 
     return (
-        <ScrollView style={styles.viewContainer}>
-            <ImagePicto
-                imageMensaje={imagesSelected[0]}
-            />
-            <FormAdd
-                formData={formData}
-                setFormData={setFormData}
-                errorName={errorName}
-            />
-            <UploadImage
-                toastRef={toastRef}
-                imagesSelected={imagesSelected}
-                setImagesSelected={setImagesSelected}
-            />
-            <Button
-                title="Crear Pictograma"
-                onPress={addFavorito}
-                buttonStyle={styles.btnAddFavorito}
-            />
-        </ScrollView>
+        <View style={styles.viewBody}>
+            <ScrollView style={styles.viewContainer}>
+                <ImagePicto
+                    imageMensaje={imagesSelected[0]}
+                />
+                <FormAdd
+                    formData={formData}
+                    setFormData={setFormData}
+                    errorName={errorName}
+                />
+                <UploadImage
+                    toastRef={toastRef}
+                    imagesSelected={imagesSelected}
+                    setImagesSelected={setImagesSelected}
+                />
+                <Button
+                    title="Crear Pictograma"
+                    onPress={addFavorito}
+                    buttonStyle={styles.btnAddFavorito}
+                />
+            </ScrollView>
+        </View>
     )
 }
 
@@ -201,6 +203,10 @@ const defaultFormValue = () => {
 }
 
 const styles = StyleSheet.create({
+    viewBody: {
+        flex: 1,
+        backgroundColor: "#d6eefb"
+    },
     viewContainer: {
         height: "100%"
     },

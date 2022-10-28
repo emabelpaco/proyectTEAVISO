@@ -149,7 +149,7 @@ export default function RegisterForm() {
             />
             <Input
                 containerStyle={styles.input}
-                placeholder="Ingrese su mail..."
+                placeholder="Ingrese su mail"
                 onChange={(e) => onChange(e, "email")}
                 keyboardType="email-address"
                 errorMessage={errorEmail}
@@ -157,7 +157,7 @@ export default function RegisterForm() {
             />
             <Input
                 containerStyle={styles.input}
-                placeholder="Ingrese una contraseña..."
+                placeholder="Ingrese una contraseña"
                 password={true}
                 secureTextEntry={!showPassword}
                 onChange={(e) => onChange(e, "password")}
@@ -173,7 +173,7 @@ export default function RegisterForm() {
             />
             <Input
                 containerStyle={styles.input}
-                placeholder="Confirmar contraseña..."
+                placeholder="Confirmar contraseña"
                 password={true}
                 secureTextEntry={!showPassword}
                 onChange={(e) => onChange(e, "confirm")}

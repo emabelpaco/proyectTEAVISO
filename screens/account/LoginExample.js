@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Image, TextInput, Button, StyleSheet, Icon } from "react-native";
+import { View, Text, Image, TextInput, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-//import {  } from "react-native-elements";
+import { Button } from "react-native-elements";
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from "@react-navigation/native";
 import Context from "../../context/Context"
 import { signIn, signUp } from "../../utils/firebase";
@@ -23,11 +24,11 @@ export default function SignIn() {
         justifyContent: "center",
         alignItems: "center",
         flex: 1,
-        backgroundColor: colors.white,
+        backgroundColor: "#bfe4f9"
       }}
     >
       <Text
-        style={{ color: colors.foreground, fontSize: 24, marginBottom: 20 }}
+        style={{ color: colors.foreground, fontSize: 30, marginBottom: 40, fontWeight: "bold" }}
       >
         Bienvenido a TEAviso
       </Text>
@@ -61,42 +62,39 @@ export default function SignIn() {
             marginTop: 20,
           }}
         />
-        <View style={{ marginTop: 20 }}>
+        <View style={{ margin: 10 }}>
           <Button
             title="Login"
             disabled={!password || !email}
             color={colors.secondary}
+            buttonStyle={styles.btnLogin}
             onPress={handlePress}
           />
         </View>
-        <Button
+            <Button
                 title="Iniciar Sesión con Google"
-                containerStyle={styles.btnContainer}
                 buttonStyle={styles.btnGoogle}
+                titleStyle={styles.btnText}
                 onPress={() => console.log("Iniciar con google")}
                 icon={
-                    <Icon
-                        name="google"
-                        type="material-community"
-                        marginRight={10}
-                        size={20}
-                        color="#fff"
-                    />
+                  <Icon
+                    name="google"
+                    size={20}
+                    color="white"
+                  />
                 }
             />
             <Button
                 title="Iniciar Sesión con Facebook"
-                containerStyle={styles.btnContainer}
                 buttonStyle={styles.btnFacebook}
+                titleStyle={styles.btnText}
                 onPress={() => console.log("Iniciar con facebook")}
                 icon={
-                    <Icon
-                        name="facebook"
-                        type="material-community"
-                        marginRight={10}
-                        size={20}
-                        color="#fff"
-                    />
+                  <Icon
+                    name="facebook"
+                    size={20}
+                    color="white"
+                  />
                 }
             />
         <TouchableOpacity
@@ -143,15 +141,18 @@ const styles = StyleSheet.create({
         color: "#4cb4eb",
         fontWeight: "bold"
     },
+    btnLogin: {
+      backgroundColor: "#4cb4eb"
+    },
     btnGoogle: {
-      backgroundColor: "#EA4335"
-  },
-  btnFacebook: {
-      //backgroundColor: "#EA4335"
-  },
-  btnContainer: {
-    marginTop: 15,
-    width: "95%",
-    alignSelf: "center"
-},
+        margin:10,
+        backgroundColor: "#4cb4eb"
+    },
+    btnFacebook: {
+        margin:10,
+        backgroundColor: "#4cb4eb"
+    },
+    btnText: {
+        marginLeft: 15
+    }
 })
