@@ -1,5 +1,5 @@
 import React, {useEffect, useReducer, useState } from "react";
-import { StyleSheet, View, ScrollView, Dimensions, FlatList, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, ScrollView, Dimensions, FlatList, Text, TouchableOpacity, Alert } from "react-native";
 import { Button, Input, Image, Overlay, Icon } from "react-native-elements";
 import { map, size, isEmpty } from 'lodash';
 import { uploadImage } from "../../utils/actions";
@@ -169,6 +169,7 @@ export default function AddMensajeForm(route) {
             console.log("se ejecuto el axios!!!!!!!!!!!", user.email,  idCategoria, idMensaje )
             const res = await axios.get('http://192.168.0.116:3000/api/users/saveMessajeInCategoria', {params: {email: user.email, categorias:categoriasActual, idCategoria: idCategoria, idMensaje: idMensaje}})
             console.log("RESULTADO:     ", res)
+            createTwoButtonAlert()
         } catch (error){
             console.log(error)
         }
@@ -251,6 +252,20 @@ export default function AddMensajeForm(route) {
         setBusquedaRes(null);
         setIsVisible(false);
     }
+
+    const createTwoButtonAlert = () =>
+        Alert.alert(
+            "Mensaje Guardado",
+            "Se almacena en la categoría seleccionada.",
+            [
+                // {
+                //     text: "Cancel",
+                //     onPress: () => console.log("Cancel Pressed"),
+                //     style: "cancel"
+                // },
+                { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+    );
 
     return (
         <ScrollView style={styles.viewContainer}>
