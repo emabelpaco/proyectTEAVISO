@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, {useEffect, useReducer, useState } from "react";
 import { StyleSheet, View, ScrollView, Dimensions, FlatList, Text, TouchableOpacity } from "react-native";
 import { Button, Input, Image, Overlay, Icon } from "react-native-elements";
 import { map, size, isEmpty } from 'lodash';
@@ -8,6 +8,7 @@ import Voice from '@react-native-voice/voice';
 import OptionsMenu from "react-native-option-menu";
 import SelectList from 'react-native-dropdown-select-list'
 import Loading from '../../components/Loading'
+import firebase from "firebase/compat/app";
 import uuid from 'random-uuid-v4';
 import axios from 'axios'
 
@@ -15,9 +16,15 @@ const widthScreen = Dimensions.get("window").width
 const MoreIcon = require("../../assets/optionsV.png");
 
 export default function AddMensajeForm(route) {
-
+    const [user, setUser] = useState(null)
+    //console.log("a ver que hay conj categorias  ", route.navigation.params.conjCategorias)
+    //console.log("a ver que hay mensajes:  ", route.navigation.params.mensajes[0].mensajes[0].imagenes)
     useEffect(() => {
         setListCategorias()
+        firebase.auth().onAuthStateChanged((userInfo) => {
+            userInfo ? setUser(userInfo) : setUser(false)
+            fetchApiGetCategorias(userInfo)
+        })
     }, [])
 
     const fetchApiBuscarFrasePicto = async () => {
@@ -47,6 +54,7 @@ export default function AddMensajeForm(route) {
         var dataPicto = []
         var numImage;
         var textImage;
+        var index = 0;
         arrayData.forEach(element => {
             var arrayImages = element.split('[').pop().split(']')[0];
             var bodyImage = {}
@@ -54,6 +62,8 @@ export default function AddMensajeForm(route) {
             textImage = element.substring(element.indexOf(']') + 2);
             bodyImage.image = urlImage + numImage;
             bodyImage.text = textImage;
+            bodyImage.idImagen = index; 
+            index = index + 1;
             dataPicto.push(bodyImage)
         });
         setImagesSelected(dataPicto)
@@ -66,6 +76,7 @@ export default function AddMensajeForm(route) {
         var dataPicto = []
         var numImage;
         var textImage;
+        var index = 0;
         arrayData.forEach(element => {
             var arrayImages = element.split('[').pop().split(']')[0];
             var bodyImage = {}
@@ -73,6 +84,8 @@ export default function AddMensajeForm(route) {
             textImage = element.substring(element.indexOf(']') + 2);
             bodyImage.image = urlImage + numImage;
             bodyImage.text = textImage;
+            bodyImage.idImagen = index; 
+            index = index + 1;
             dataPicto.push(bodyImage)
         });
         if (busquedaRes == null) {
@@ -114,6 +127,7 @@ export default function AddMensajeForm(route) {
     }
 
     const addMensaje = async () => {
+        var idMensaje = 0;
         if (selected == 1000 && nuevaCategoria == '') {
             console.log("debe ingresar el nombre de la categoria")
         }
@@ -124,12 +138,18 @@ export default function AddMensajeForm(route) {
             var dataNuevoMensaje = {}
             dataNuevoMensaje.idMensaje = "3"
             dataNuevoMensaje.nameMensaje = formData.name
+            console.log("EL ARRAY DE IMAGENES A GUARDAR:   ", imagesSelected)
             dataNuevoMensaje.imagenes = imagesSelected
-            var idCategoria = 0
+            var idCategoria = parseInt(categoriaSelect) - 1
+            console.log("EL FOR DE CATEGORIAS ACTUAL  :   ", categoriasActual)
             categoriasActual.forEach(element => {
                 if (element.idCategoria === categoriaSelect){
                     //dataUpdate = element
+                    console.log("ANTES DEL PUSH  :   ", element.mensajes)
                     element.mensajes.push(dataNuevoMensaje)
+                    console.log("DESPUES DEL PUSH  :   ", element.mensajes)
+                    idMensaje = element.mensajes.length -1
+                    console.log("ID IMAGEN  :   ", idMensaje)
                     return
                 }
             });
@@ -138,12 +158,17 @@ export default function AddMensajeForm(route) {
                 dataNuevaCategoria.idCategoria = "3"
                 dataNuevaCategoria.nameCategoria = nuevaCategoria
                 dataNuevaCategoria.mensajes = []
+                console.log("NUEVA CATE. EL PUSH  :   ", dataNuevoMensaje)
                 dataNuevaCategoria.mensajes.push(dataNuevoMensaje)
                 dataNuevaCategoria.imageCategoria = ""
+                console.log("ANTES CATEGORIAS ACTUAL  :   ", categoriasActual)
                 categoriasActual.push(dataNuevaCategoria)
+                console.log("DESPUES CATEGORIAS ACTUAL  :   ", categoriasActual)
             }
-            const res = await axios.get('http://192.168.0.116:3000/api/users/saveMessajeInCategoria', {params: {email: "dewey.paco@gmail.com" ,categorias:categoriasActual}})
-            
+            //console.log("se ejecuto el axios!!!!!!!!!!!", categoriasActual[0].mensajes[12].imagenes)
+            console.log("se ejecuto el axios!!!!!!!!!!!", user.email,  idCategoria, idMensaje )
+            const res = await axios.get('http://192.168.0.116:3000/api/users/saveMessajeInCategoria', {params: {email: user.email, categorias:categoriasActual, idCategoria: idCategoria, idMensaje: idMensaje}})
+            console.log("RESULTADO:     ", res)
         } catch (error){
             console.log(error)
         }

@@ -6,7 +6,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import Loading from "../../components/Loading";
 
 export default function AddMensaje({ route , mensajes}) {
-    console.log("ADDMensaje estoy aquiu: ", route.params.mensajes)
+    //console.log("ADDMensaje estoy aquiu: ", route.params.mensajes[0].mensajes[0].imagenes)
+    //console.log("ADDMensaje estoy aquiu: ", route.params.mensajes[0].mensajes[0].respuestas)
     const toastRef = useRef()
     const [loading, setLoading] = useState(false)
 

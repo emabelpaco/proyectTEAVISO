@@ -48,7 +48,7 @@ export default function  Navigation (){
     }, []);
     
     if (loading) {
-        return <Text>Loading...</Text>;
+        return <Text></Text>;
     }
     
     const screenOptions = (route, color) => {

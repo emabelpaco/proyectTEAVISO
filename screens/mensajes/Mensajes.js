@@ -17,20 +17,21 @@ export default function Mensaje() {
     const [conjCategorias, setConjCategorias] = useState([])
 
     const limitMensajes = 7
-    console.log("MENSAJES ", mensajes)
 
     useEffect(() => {
         firebase.auth().onAuthStateChanged((userInfo) => {
             userInfo ? setUser(userInfo) : setUser(false)
+            fetchApiGetCategorias(userInfo)
         })
-        fetchApiGetCategorias()
     }, [])
 
-    const fetchApiGetCategorias = async () => {
+    const fetchApiGetCategorias = async (userInfo) => {
         console.log("fetch api categorias")
         try {
-            const res = await axios.get('http://192.168.0.116:3000/api/users/getCategoriasByEmail', {params: {email: "dewey.paco@gmail.com"}})
-            console.log("CAtegorias::: ", res.data.data.docs[0].categorias)
+            const res = await axios.get('http://192.168.0.116:3000/api/users/getCategoriasByEmail', {params: {email: userInfo.email}})
+            console.log("CATEGORIASSSS::: ", res.data.data.docs[0])
+            console.log("CATEGORIASSSS::: ", res.data.data.docs[0].categorias[0].mensajes)
+            console.log("CATEGORIASSSS::: ", res.data.data.docs[0].categorias[0].mensajes[0].imagenes)
             setMensajes(res.data.data.docs[0].categorias)
             //setConjuntoCategorias(mensajes)
             const data = res.data.data.docs[0].categorias
@@ -42,25 +43,26 @@ export default function Mensaje() {
                 arrayCateg.push(body)
             });
             setConjCategorias(arrayCateg)
-            console.log("DDDDDD ", conjCategorias)
+            //console.log("DDDDDD ", conjCategorias)
         
         } catch (error){
             console.log(error)
         }
     }
 
-    const setConjuntoCategorias = async (d) => {
-        console.log("DDDDDD ", d)
-        const data = d
-        var arrayCateg = []
-        data.forEach(element => {
-            var body = {}
-            body.id = element.idCategoria
-            body.categoria = element.nameCategoria
-            arrayCateg.push(body)
-        });
-        setConjCategorias(arrayCateg)
-    }
+    // const setConjuntoCategorias = async (d) => {
+    //     console.log("DDDDDD ", d)
+    //     const data = d
+    //     var arrayCateg = []
+    //     data.forEach(element => {
+    //         var body = {}
+    //         body.id = element.idCategoria
+    //         body.categoria = element.nameCategoria
+    //         arrayCateg.push(body)
+    //     });
+    //     setConjCategorias(arrayCateg)
+    // }
+
     // useFocusEffect(
     //     useCallback(() => {
     //         async function getData(){
@@ -110,7 +112,7 @@ export default function Mensaje() {
                     />
                 ) : (
                     <View style={styles.notFoundView}>
-                        <Text style={styles.notFoundText}></Text>
+                        <Text style={styles.notFoundText}>Aquí se pueden visualizar sus mensajes guardados en diferentes categorías</Text>
                     </View>
                 )
             }
@@ -155,6 +157,7 @@ const styles = StyleSheet.create({
     },
     notFoundText: {
         fontSize: 18,
-        fontWeight: "bold"
+        textAlign: "center",
+        color:"#a4a4a4"
     }
 })
