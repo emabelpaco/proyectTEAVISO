@@ -2,7 +2,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import AddMensaje from "../screens/mensajes/AddMensaje";
 import Mensajes from "../screens/mensajes/Mensajes";
-import Mensaje from "../screens/mensajes/Mensaje"
+import Mensaje from "../screens/mensajes/Mensaje";
+import Expandir from "../screens/mensajes/Expandir";
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,11 @@ export default function MensajeStack() {
                 name="frases"
                 component={Mensaje}
                 options={{title: "MENSAJES GUARDADOS"}}
+                />
+            <Stack.Screen
+                name="expandirmensaje"
+                component={Expandir}
+                options={{title: ""}}
                 />
         </Stack.Navigator>
         
